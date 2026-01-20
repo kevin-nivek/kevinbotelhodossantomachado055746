@@ -1,0 +1,33 @@
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import { Pet } from "../../core/models/pet.model";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { enviroment } from "../../../enviroment/enviroment";
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PetsService {
+
+  private petSubjects = new BehaviorSubject<Pet[]>([])
+  pets$ = this.petSubjects.asObservable();
+
+  private readonly apiUrl = `${enviroment.apiUrl}/pets`
+  constructor(private http: HttpClient) {}
+
+  listar(page: number = 0, size: number = 10, nome: string = '', raca: string = '') {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size);
+
+    if (nome) {
+      params = params.set('nome', nome);
+    }
+
+    return this.http.get<Pet[]>(this.apiUrl, { params });
+  }
+
+  setPets(pets: Pet[]) {
+    this.petSubjects.next(pets)
+  }
+}
