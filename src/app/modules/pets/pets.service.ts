@@ -3,6 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { Pet } from "../../core/models/pet.model";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { enviroment } from "../../../enviroment/enviroment";
+import { PetsPage } from "../../core/models/pets-page-model";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class PetsService {
       params = params.set('nome', nome);
     }
 
-    return this.http.get<any>(this.apiUrl, { params });
+    return this.http.get<PetsPage<Pet>>(this.apiUrl, { params });
   }
 
   setPets(pets: Pet[]) {
