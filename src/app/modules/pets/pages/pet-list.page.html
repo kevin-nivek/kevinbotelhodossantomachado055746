@@ -1,3 +1,7 @@
+@let page = (page$ | async);
+@let pageCount = (pageCount$ | async);
+
+
 <div class="p-4">
   <h1 class="text-2xl font-bold mb-4">Pets Cadastrados</h1>
 
@@ -28,8 +32,19 @@
 
   <button
     class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-  (click)="nextPage()"
+  (click)="nextPage(page!)"
   >
     Próxima Página
+  </button>
+
+  <span class="px-4 py-2">
+    Página {{ page! + 1 }} de {{ pageCount }}
+  </span>
+
+  <button
+    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+  (click)="previousPage(page!)"
+  >
+    Página Anterior
   </button>
 </div>

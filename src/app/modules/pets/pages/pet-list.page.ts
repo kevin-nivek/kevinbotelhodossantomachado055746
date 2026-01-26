@@ -4,6 +4,7 @@ import { PetsFacade } from "../pets.facade";
 import { FormsModule } from "@angular/forms";
 import { Observable } from "rxjs/internal/Observable";
 import { AsyncPipe } from "@angular/common";
+import { take } from "rxjs";
 
 @Component({
   standalone: true,
@@ -14,25 +15,48 @@ import { AsyncPipe } from "@angular/common";
 export class PetListPage implements OnInit {
 
   pets$!: Observable<Pet[]>;
-  page: number = 0;
+
   nomeSerach: string = '';
   racaSearch: string = '';
   sizeSearch: number = 10;
+  page$!: Observable<number>;
+  pageCount$!: Observable<number>;
+  total$!: Observable<number>;
 
   constructor(private facade: PetsFacade) {}
 
   ngOnInit(): void {
     this.pets$ = this.facade.pets$;
+    this.page$ = this.facade.page$;
+    this.pageCount$ = this.facade.pageCount$;
+    this.total$ = this.facade.total$;
     this.facade.loadPets();
   }
 
   search() {
-    this.page = 0;
-    this.facade.loadPets(this.page, this.sizeSearch, this.nomeSerach, this.racaSearch);
+    this.facade.loadPets(0, this.sizeSearch, this.nomeSerach, this.racaSearch);
   }
 
-  nextPage() {
-    this.page++;
-    this.facade.loadPets(this.page, this.sizeSearch, this.nomeSerach, this.racaSearch);
+  nextPage(page: number) {
+    this.pageCount$.pipe(take(1)).subscribe(pageCount => {
+      if (page + 1 < pageCount) {
+        this.facade.loadPets(
+          page + 1,
+          this.sizeSearch,
+          this.nomeSerach,
+          this.racaSearch
+        );
+      }
+    });
+  }
+  previousPage(page: number) {
+    if (page - 1 >= 0) {
+        this.facade.loadPets(
+          page - 1,
+          this.sizeSearch,
+          this.nomeSerach,
+          this.racaSearch
+        );
+      }
   }
 }
