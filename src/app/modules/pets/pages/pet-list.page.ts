@@ -5,6 +5,7 @@ import { FormsModule } from "@angular/forms";
 import { Observable } from "rxjs/internal/Observable";
 import { AsyncPipe } from "@angular/common";
 import { take } from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
   standalone: true,
@@ -23,7 +24,7 @@ export class PetListPage implements OnInit {
   pageCount$!: Observable<number>;
   total$!: Observable<number>;
 
-  constructor(private facade: PetsFacade) {}
+  constructor(private facade: PetsFacade, private router: Router) {}
 
   ngOnInit(): void {
     this.pets$ = this.facade.pets$;
@@ -58,5 +59,9 @@ export class PetListPage implements OnInit {
           this.racaSearch
         );
       }
+  }
+
+  viewDetail(id: number) {
+    this.router.navigate(['/pets', id]);
   }
 }

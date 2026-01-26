@@ -1,0 +1,46 @@
+@let pet = (pet$ | async);
+
+@if (pet) {
+  <div class="max-w-xl mx-auto p-6">
+
+    @if (pet.foto?.url) {
+      <img
+        [src]="pet.foto?.url"
+        class="w-full h-64 object-cover rounded mb-4"
+      />
+    }
+
+    <h1 class="text-2xl font-bold mb-2">
+      {{ pet.nome }}
+    </h1>
+
+    <p><strong>Raça:</strong> {{ pet.raca }}</p>
+    <p><strong>Idade:</strong> {{ pet.idade ?? 'Não informada' }}</p>
+
+    @if((pet?.tutores?.length ?? 0) > 0) {
+      <div class="mt-4">
+        <h2 class="text-xl font-semibold mb-2">Tutores</h2>
+        <ul class="list-disc list-inside">
+          @for (tutor of pet.tutores ; track tutor.id) {
+            <li>
+              @if (tutor.foto?.url) {
+                <img
+                  [src]="tutor.foto?.url"
+                  class="h-8 w-8 rounded-full inline-block mr-2 object-cover"
+                />
+              }
+              {{ tutor.nome }} - {{ tutor.telefone }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <button
+      class="mt-6 px-4 py-2 border rounded"
+      (click)="backToList()">
+      Voltar
+    </button>
+
+  </div>
+}

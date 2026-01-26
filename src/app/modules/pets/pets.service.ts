@@ -31,4 +31,8 @@ export class PetsService {
   setPets(pets: Pet[]) {
     this.petSubjects.next(pets)
   }
+
+  getById(id: number) {
+    return this.http.get<Pet>(`${this.apiUrl}/${id}`);
+  }
 }

@@ -21,7 +21,8 @@ export class PetsFacade  {
   private totalSubject = new BehaviorSubject<number>(0);
   total$ = this.totalSubject.asObservable();
 
-
+  private selectedPetSubject = new BehaviorSubject<Pet | null>(null);
+  selectedPet$ = this.selectedPetSubject.asObservable();
   constructor(private service: PetsService) {}
 
 
@@ -35,4 +36,10 @@ export class PetsFacade  {
       });
   }
 
+  loadPetById(id: number) {
+    this.service.getById(id).subscribe(pet => {
+      console.log(pet);
+      this.selectedPetSubject.next(pet);
+    });
+  }
 }

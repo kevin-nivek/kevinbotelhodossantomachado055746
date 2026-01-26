@@ -1,0 +1,38 @@
+import { Component, OnInit } from "@angular/core";
+import { PetsFacade } from "../../pets.facade";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Observable } from "rxjs/internal/Observable";
+import { Pet } from "../../../../core/models/pet.model";
+import { AsyncPipe } from "@angular/common";
+
+
+@Component({
+  standalone: true,
+  selector: 'app-pet-detail',
+  templateUrl: './pet-detail.page.html',
+  imports: [ AsyncPipe],
+})
+
+export class PetDetailPage implements OnInit{
+
+  pet$!: Observable<Pet | null>;
+
+  constructor(
+    private facade: PetsFacade,
+    private router: Router,
+    private route: ActivatedRoute
+
+  ) {}
+
+  ngOnInit(): void {
+    this.pet$ = this.facade.selectedPet$;
+    const petId = this.route.snapshot.paramMap.get('id');
+    if (petId) {
+      this.facade.loadPetById(+petId);
+    }
+  }
+
+  backToList() {
+    this.router.navigate(['/']);
+  }
+}
