@@ -1,7 +1,11 @@
+import { Foto } from "./foto.model";
+import { Tutor } from "./tutor.model";
+
 export interface Pet{
   id: number;
   nome: string;
-  especie: string;
+  raca: string;
   idade: number;
-  foto: {url: string} | null;
+  foto: Foto | null;
+  tutores: Tutor[];
 }
