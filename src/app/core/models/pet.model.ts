@@ -3,5 +3,5 @@ export interface Pet{
   nome: string;
   especie: string;
   idade: number;
-  fotoUrl: string;
+  foto: {url: string} | null;
 }

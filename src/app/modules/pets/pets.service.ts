@@ -12,7 +12,7 @@ export class PetsService {
   private petSubjects = new BehaviorSubject<Pet[]>([])
   pets$ = this.petSubjects.asObservable();
 
-  private readonly apiUrl = `${enviroment.apiUrl}/pets`
+  private readonly apiUrl = `${enviroment.apiUrl}/v1/pets`
   constructor(private http: HttpClient) {}
 
   listar(page: number = 0, size: number = 10, nome: string = '', raca: string = '') {
@@ -24,7 +24,7 @@ export class PetsService {
       params = params.set('nome', nome);
     }
 
-    return this.http.get<Pet[]>(this.apiUrl, { params });
+    return this.http.get<any>(this.apiUrl, { params });
   }
 
   setPets(pets: Pet[]) {

@@ -1,15 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { Pet } from "../../../core/models/pet.model";
 import { PetsFacade } from "../pets.facade";
+import { FormsModule } from "@angular/forms";
+import { Observable } from "rxjs/internal/Observable";
+import { AsyncPipe } from "@angular/common";
 
 @Component({
   standalone: true,
   selector: 'app-pet-list',
-  template: './pet-list.page.html'
+  templateUrl: './pet-list.page.html',
+  imports: [FormsModule, AsyncPipe],
 })
 export class PetListPage implements OnInit {
 
-  pets: Pet[] = [];
+  pets$!: Observable<Pet[]>;
   page: number = 0;
   nomeSerach: string = '';
   racaSearch: string = '';
@@ -18,10 +22,8 @@ export class PetListPage implements OnInit {
   constructor(private facade: PetsFacade) {}
 
   ngOnInit(): void {
-      this.facade.loadPets();
-      this.facade.pets$.subscribe(pets => {
-        this.pets = pets;
-      })
+    this.pets$ = this.facade.pets$;
+    this.facade.loadPets();
   }
 
   search() {

@@ -5,31 +5,30 @@
     type="text"
     placeholder="Buscar por nome"
     class="border p-2 mb-4 w-full md:w-1/3"
-    [(ngModel)]="nomeBusca"
-    (keyup.enter)="buscar()"
   />
-
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    @for (pet of (pets$ | async) ; track pet.id) {
     <div
-      *ngFor="let pet of pets"
       class="border rounded shadow p-4 cursor-pointer"
-      [routerLink]="['/pets', pet.id]"
+
     >
+      @if (pet.foto?.url) {
       <img
-        *ngIf="pet.fotoUrl"
-        [src]="pet.fotoUrl"
+        [src]="pet.foto?.url"
         class="h-40 w-full object-cover mb-2 rounded"
       />
+      }
 
       <h2 class="font-semibold text-lg">{{ pet.nome }}</h2>
       <p>Espécie: {{ pet.especie }}</p>
       <p>Idade: {{ pet.idade }} anos</p>
     </div>
+    }
   </div>
 
   <button
     class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-    (click)="proximaPagina()"
+  (click)="nextPage()"
   >
     Próxima Página
   </button>
