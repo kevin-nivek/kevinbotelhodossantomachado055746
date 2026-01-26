@@ -19,6 +19,6 @@ export class LoginPage {
 
   entrar() {
     this.auth.login(this.login, this.senha)
-    this.router.navigate(['/']);
+
   }
 }
