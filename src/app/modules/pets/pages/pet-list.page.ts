@@ -17,7 +17,7 @@ export class PetListPage implements OnInit {
 
   pets$!: Observable<Pet[]>;
 
-  nomeSerach: string = '';
+  nomeSearch: string = '';
   racaSearch: string = '';
   sizeSearch: number = 10;
   page$!: Observable<number>;
@@ -35,7 +35,9 @@ export class PetListPage implements OnInit {
   }
 
   search() {
-    this.facade.loadPets(0, this.sizeSearch, this.nomeSerach, this.racaSearch);
+    console.log(this.nomeSearch);
+
+    this.facade.loadPets(0, this.sizeSearch, this.nomeSearch, this.racaSearch);
   }
 
   nextPage(page: number) {
@@ -44,7 +46,7 @@ export class PetListPage implements OnInit {
         this.facade.loadPets(
           page + 1,
           this.sizeSearch,
-          this.nomeSerach,
+          this.nomeSearch,
           this.racaSearch
         );
       }
@@ -55,7 +57,7 @@ export class PetListPage implements OnInit {
         this.facade.loadPets(
           page - 1,
           this.sizeSearch,
-          this.nomeSerach,
+          this.nomeSearch,
           this.racaSearch
         );
       }
