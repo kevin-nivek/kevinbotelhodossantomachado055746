@@ -66,4 +66,8 @@ export class PetListPage implements OnInit {
   viewDetail(id: number) {
     this.router.navigate(['/pets', id]);
   }
+
+  novoPet() {
+    this.router.navigate(['/new', 'pets']);
+  }
 }

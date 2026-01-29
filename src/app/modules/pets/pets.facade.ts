@@ -42,4 +42,20 @@ export class PetsFacade  {
       this.selectedPetSubject.next(pet);
     });
   }
+
+  novoPet(petData: any): Observable<Pet> {
+    return this.service.novoPet(petData);
+  }
+
+  novaFotoPet(petId: number, fotoData: FormData) {
+    return this.service.novaFoto(petId, fotoData);
+  }
+
+  editPet(id: number, petData: any) {
+    this.service.editPet(id, petData).subscribe(() => this.loadPets());
+  }
+
+  deleteFotoPet(petId: number, fotoId: number) {
+    return this.service.deleteFoto(petId, fotoId);
+  }
 }

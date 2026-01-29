@@ -15,7 +15,7 @@
     </h1>
 
     <p><strong>Raça:</strong> {{ pet.raca }}</p>
-    <p><strong>Idade:</strong> {{ pet.idade ?? 'Não informada' }}</p>
+    <p><strong>Idade:</strong> {{ pet?.idade || 'Não informada' }}</p>
 
     @if((pet?.tutores?.length ?? 0) > 0) {
       <div class="mt-4">
@@ -40,6 +40,11 @@
       class="mt-6 px-4 py-2 border rounded"
       (click)="backToList()">
       Voltar
+    </button>
+    <button
+      class="mt-6 px-4 py-2 border rounded bg-blue-600 text-white"
+      (click)="goToEdit()">
+      Editar
     </button>
 
   </div>

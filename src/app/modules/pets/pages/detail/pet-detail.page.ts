@@ -32,6 +32,11 @@ export class PetDetailPage implements OnInit{
     }
   }
 
+  goToEdit(){
+    const id = this.route.snapshot.paramMap.get('id');
+    this.router.navigate(['/pets', id, 'edit']);
+  }
+
   backToList() {
     this.router.navigate(['/']);
   }
