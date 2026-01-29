@@ -10,7 +10,7 @@
   @if (fotoPreviewUrl) {
       <img
         [(src)]="fotoPreviewUrl"
-        class="w-full h-64 object-cover rounded mb-4"
+        class="h-70 object-cover rounded mb-4"
       />
       <button class="px-4 py-2 bg-red-600 text-white rounded"
         (click)="removerFoto(form.get('foto')?.value?.id)"
