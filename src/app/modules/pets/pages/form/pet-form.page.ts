@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { Form, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { Form, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
-import { PetsFacade } from "../../pets.facade";
+import { PetsFacade } from "../../facades/pets.facade";
 import { filter, take } from "rxjs";
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -19,31 +19,26 @@ export class PetFormPage implements OnInit {
   petId?: number;
 
   fotoDeletedId?: number;
-  selectedFile?: File;
-  fotoPreviewUrl?: string;
+  selectedFile?: File | null;
+  fotoPreviewUrl?: string | null;
 
   constructor(
     private fb: FormBuilder,
     private facade: PetsFacade,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.initForm();
-    this.facade.selectedPet$.pipe(filter(Boolean), take(1)).subscribe(pet => {
-      if (pet && pet.foto) {
-        this.fotoPreviewUrl = pet.foto.url;
-      }
-    });
+
   }
 
 
 
   initForm() {
     this.form = this.fb.group({
-      nome: [''],
+      nome: ['', Validators.required],
       raca: [''],
       idade: [''],
       foto: ['']
@@ -66,16 +61,14 @@ export class PetFormPage implements OnInit {
           .subscribe(pet => this.form.patchValue(pet));
       }
     });
-    // const id = this.route.snapshot.paramMap.get('id');
-    // if (id) {
-    //   this.edit = true;
-    //   this.petId = +id;
 
-    //   this.facade.loadPetById(this.petId);
-    //   this.facade.selectedPet$
-    //     .pipe(filter(Boolean), take(1))
-    //     .subscribe(pet => this.form.patchValue(pet));
-    // }
+    if(this.edit){
+      this.facade.selectedPet$.pipe(filter(Boolean), take(1)).subscribe(pet => {
+        if (pet && pet.foto) {
+          this.fotoPreviewUrl = pet.foto.url;
+        }
+      });
+    }
   }
 
   submit() {
@@ -96,17 +89,6 @@ export class PetFormPage implements OnInit {
 
       });
     }
-
-
-
-
-    /**
-     * 1 - salva o pet
-     * 2 -  salva a foto do pet
-     * 3 - salva os tutores do pet
-     * 4 - volta para a home
-     */
-
     this.bakHome();
   }
 
@@ -129,10 +111,8 @@ export class PetFormPage implements OnInit {
     const file = input.files[0];
     this.selectedFile = file;
 
-    // 🔥 PREVIEW IMEDIATO, SEM BUG
     this.fotoPreviewUrl = URL.createObjectURL(file);
 
-    // limpa input pra permitir selecionar o mesmo arquivo
     input.value = '';
   }
 
@@ -151,5 +131,10 @@ export class PetFormPage implements OnInit {
     this.facade.novaFotoPet(petId, formData).subscribe(() => {
       console.log('foto salva');
     });
+  }
+
+  ngOnDestroy(): void {
+    this.selectedFile = null;
+    this.fotoPreviewUrl = null;
   }
 }

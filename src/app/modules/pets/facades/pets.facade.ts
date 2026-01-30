@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { PetsService } from "./pets.service";
+import { PetsService } from "../services/pets.service";
 import { Observable } from "rxjs/internal/Observable";
-import { Pet } from "../../core/models/pet.model";
+import { Pet } from "../../../core/models/pet.model";
 import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 
 @Injectable({

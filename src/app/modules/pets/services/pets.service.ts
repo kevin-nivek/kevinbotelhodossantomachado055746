@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { Pet } from "../../core/models/pet.model";
+import { Pet } from "../../../core/models/pet.model";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { enviroment } from "../../../enviroment/enviroment";
-import { PetsPage } from "../../core/models/pets-page-model";
+import { enviroment } from "../../../../enviroment/enviroment";
+import { PetsPage } from "../../../core/models/pets-page-model";
 
 @Injectable({
   providedIn: 'root'

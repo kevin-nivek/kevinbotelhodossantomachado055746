@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { PetsFacade } from "../../pets.facade";
+import { PetsFacade } from "../../facades/pets.facade";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs/internal/Observable";
 import { Pet } from "../../../../core/models/pet.model";
