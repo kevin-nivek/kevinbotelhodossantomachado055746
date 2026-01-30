@@ -75,9 +75,15 @@ export class TutorFormPage implements OnInit {
   submit() {
     if (this.edit && this.tutorId) {
       this.facade.editTutor(this.tutorId, this.form.value);
+      if(this.selectedFile){
+        this.uploadFoto(this.tutorId!);
+      }
     } else {
-      this.facade.novoTutor(this.form.value).subscribe(() => {
-        this.router.navigate(['/tutores']);
+      this.facade.novoTutor(this.form.value).subscribe( tutor => {
+        const newTutorId = tutor.id;
+        if(this.selectedFile){
+          this.uploadFoto(newTutorId);
+        }
       })
     }
   }
@@ -86,7 +92,43 @@ export class TutorFormPage implements OnInit {
     this.router.navigate(['/tutores']);
   }
 
-    ngOnDestroy(): void {
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    this.selectedFile = file;
+
+    this.fotoPreviewUrl = URL.createObjectURL(file);
+
+    input.value = '';
+  }
+
+
+  removerFoto(id: number){
+    this.form.get('foto')?.setValue(null);
+    this.fotoDeletedId = id;
+    this.fotoPreviewUrl = undefined;
+  }
+
+  uploadFoto(tutorId: number) {
+    if(this.fotoDeletedId)
+    {
+      this.facade.deleteFotoTutor(tutorId, this.fotoDeletedId).subscribe(() => {
+      console.log('foto Excluida');
+    });
+    }
+    if (!this.selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('foto', this.selectedFile);
+
+    this.facade.novaFotoTutor(tutorId, formData).subscribe(() => {
+      console.log('foto salva');
+    });
+  }
+
+  ngOnDestroy(): void {
     this.selectedFile = null;
     this.fotoPreviewUrl = null;
   }

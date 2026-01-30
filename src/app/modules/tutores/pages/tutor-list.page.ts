@@ -71,4 +71,8 @@ export class TutorListPage implements OnInit {
   novoTutor() {
     this.router.navigate(['/new', 'tutores']);
   }
+
+  goHome(){
+    this.router.navigate(['/']);
+  }
 }
