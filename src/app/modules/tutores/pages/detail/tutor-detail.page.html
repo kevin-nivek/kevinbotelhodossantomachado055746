@@ -1,0 +1,33 @@
+@let tutor = (tutor$ | async);
+
+@if (tutor) {
+  <div class="max-w-xl mx-auto p-6">
+
+    @if (tutor.foto?.url) {
+      <img
+        [src]="tutor.foto?.url"
+        class="h-70 object-cover rounded mb-4"
+      />
+    }
+
+    <h1 class="text-2xl font-bold mb-2">
+      {{ tutor.nome }}
+    </h1>
+
+    <p><strong>CPF:</strong> {{ tutor.cpf }}</p>
+    <p><strong>Email:</strong> {{ tutor.email }}</p>
+    <p><strong>Telefone:</strong> {{ tutor.telefone || 'Não informado' }}</p>
+
+    <button
+      class="mt-6 px-4 py-2 border rounded"
+      (click)="backToList()">
+      Voltar
+    </button>
+    <button
+      class="mt-6 px-4 py-2 border rounded bg-blue-600 text-white"
+      (click)="goToEdit()">
+      Editar
+    </button>
+
+  </div>
+}
