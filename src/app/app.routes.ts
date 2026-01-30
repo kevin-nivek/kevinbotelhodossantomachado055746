@@ -33,6 +33,15 @@ export const routes: Routes = [
     loadComponent: () =>
     import('./modules/pets/pages/form/pet-form.page').then(m => m.PetFormPage),
     canActivate: [authGuard]
-  }
+  },
+
+  {
+    path: 'tutores',
+    loadChildren: () => import('./modules/tutores/tutores.routes')
+    .then(m => m.TUTORES_ROUTES),
+    canActivate: [authGuard]
+  },
+
+
 
 ];

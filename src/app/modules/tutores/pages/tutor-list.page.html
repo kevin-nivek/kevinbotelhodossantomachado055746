@@ -1,0 +1,29 @@
+<div class="p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-xl font-bold">Tutores</h1>
+
+    <button
+      class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded"
+      (click)="novoTutor()"
+    >
+      <span class="material-icons">add</span>
+      Novo Tutor
+    </button>
+  </div>
+
+  <ul class="space-y-2">
+    @for (tutor of tutores$ | async; track tutor.id) {
+      <li class="border p-3 rounded" (click)="viewDetail(tutor.id)">
+        @if (tutor.foto?.url) {
+          <img
+            [src]="tutor.foto?.url"
+            class="h-10  rounded-full inline-block mr-2 object-cover"
+          />
+        }
+        <strong>{{ tutor.nome }}</strong><br>
+        CPF: {{ tutor.cpf }}<br>
+        Email: {{ tutor.email }}
+      </li>
+    }
+  </ul>
+</div>
