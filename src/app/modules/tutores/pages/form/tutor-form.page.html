@@ -1,0 +1,27 @@
+<div class="p-4 max-w-lg mx-auto">
+  <h1 class="text-xl font-bold mb-4">
+    {{ edit ? 'Editar Tutor' : 'Novo Tutor' }}
+  </h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+
+    <input class="w-full border p-2 rounded" placeholder="Nome" formControlName="nome" />
+    <input class="w-full border p-2 rounded" placeholder="CPF" formControlName="cpf" />
+    <input class="w-full border p-2 rounded" placeholder="Telefone" formControlName="telefone" />
+    <input class="w-full border p-2 rounded" placeholder="Email" formControlName="email" />
+
+    <button
+      class="w-full bg-blue-600 text-white py-2 rounded"
+      type="submit"
+    >
+      Salvar
+    </button>
+
+    <button
+      type="button"
+      class="px-4 py-2 border rounded"
+      (click)="backtutores()">
+      Cancelar
+    </button>
+  </form>
+</div>

@@ -42,6 +42,18 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
+  {
+    path: 'tutores/:id/edit',
+    loadComponent: () =>
+    import('./modules/tutores/pages/form/tutor-form.page').then(m => m.TutorFormPage),
+    canActivate: [authGuard]
+  },
 
+  {
+    path: 'new/tutores',
+    loadComponent: () =>
+    import('./modules/tutores/pages/form/tutor-form.page').then(m => m.TutorFormPage),
+    canActivate: [authGuard]
+  },
 
 ];
