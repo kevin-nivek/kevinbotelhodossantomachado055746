@@ -1,5 +1,6 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { catchError, Observable, switchMap, throwError } from "rxjs";
 import { AuthFacade } from "./auth.facade";
 import { AuthService } from "./auth.service";
@@ -8,6 +9,7 @@ import { AuthService } from "./auth.service";
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthFacade);
   const authService = inject(AuthService);
+  const router = inject(Router);
   console.log(req.url);
 
 if (
@@ -30,6 +32,11 @@ if (
         return next(clonedReq);
       }),
       catchError(err => {
+        if (err.status === 401) {
+          localStorage.clear();
+          router.navigate(['/login']);
+        }
+
         return throwError(() => err);
       })
     )
@@ -42,5 +49,14 @@ if (
       })
     : req;
 
-  return next(authReq);
+  return next(authReq).pipe(
+    catchError(err => {
+      if (err.status === 401) {
+        localStorage.clear();
+        router.navigate(['/login']);
+      }
+
+      return throwError(() => err);
+    })
+  );
 };
