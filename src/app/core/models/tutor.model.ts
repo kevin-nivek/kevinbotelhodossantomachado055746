@@ -1,4 +1,5 @@
 import { Foto } from "./foto.model";
+import { Pet } from "./pet.model";
 
 export interface Tutor{
   id: number;
@@ -8,4 +9,5 @@ export interface Tutor{
   endereco: string;
   cpf: string;
   foto: Foto | null;
+  pets: Pet[]
 }

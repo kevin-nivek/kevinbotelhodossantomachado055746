@@ -3,8 +3,10 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TutoresFacade } from "../../facades/tutores.facade";
-import { filter, take } from "rxjs";
+import { filter, Observable, take } from "rxjs";
 import { Router } from "@angular/router";
+import { Pet } from "../../../../core/models/pet.model";
+import { PetsFacade } from "../../../pets/facades/pets.facade";
 
 @Component({
   selector: 'app-tutor-form-page',
@@ -22,17 +24,27 @@ export class TutorFormPage implements OnInit {
   selectedFile?: File | null;
   fotoPreviewUrl?: string | null;
 
+  listPets: Pet[] = [];
+
+  petsOptions: Pet[] =[]
+  newPetsIds: number[] = [];
+  deletedPetsIds: number[] = [];
+  nomePetSearch: string = '';
+  pets$: Observable<Pet[]> | undefined;
+
   constructor(
     private fb: FormBuilder,
     private facade: TutoresFacade,
     private router: Router,
     private route: ActivatedRoute,
+    private petsFacade: PetsFacade,
   )
   { }
 
   ngOnInit(): void {
     this.initForm();
-
+    this.petsFacade.clearPets()
+    this.pets$ = this.petsFacade.pets$;
   }
 
   initForm() {
@@ -42,7 +54,9 @@ export class TutorFormPage implements OnInit {
       email: [''],
       endereco: [''],
       cpf: [''],
-      foto: ['']
+      foto: [''],
+      pets: [[]],
+      nomePetSearch: ['']
     });
 
     this.route.paramMap.subscribe(params => {
@@ -66,7 +80,10 @@ export class TutorFormPage implements OnInit {
     if(this.edit){
       this.facade.selectedTutor$.pipe(filter(Boolean), take(1)).subscribe(tutor => {
         if (tutor && tutor.foto) {
+          console.log(tutor);
+
           this.fotoPreviewUrl = tutor.foto.url;
+          this.listPets = tutor.pets || []
         }
       });
     }
@@ -79,16 +96,31 @@ export class TutorFormPage implements OnInit {
         this.uploadFoto(this.tutorId!);
       }
     } else {
+      const fileToUpload = this.selectedFile;
+      const idsPetsList = this.newPetsIds
       this.facade.novoTutor(this.form.value).subscribe( tutor => {
         const newTutorId = tutor.id;
+        this.selectedFile = fileToUpload
         if(this.selectedFile){
           this.uploadFoto(newTutorId);
         }
+
+        for (const petId of idsPetsList) {
+          this.facade.novoTutorPet(newTutorId, petId).subscribe((res)=>{
+            console.log(res);
+
+          })
+
+        }
+
       })
     }
+
+    this.backtutores()
   }
 
   backtutores() {
+    this.facade.reloadList()
     this.router.navigate(['/tutores']);
   }
 
@@ -132,4 +164,44 @@ export class TutorFormPage implements OnInit {
     this.selectedFile = null;
     this.fotoPreviewUrl = null;
   }
+
+  searchPet(){
+    const nomeBusca =  this.form.get('nomePetSearch')?.value
+    this.petsFacade.loadPets(0, 1000000, nomeBusca);
+    this.petsFacade.pets$
+    .pipe(take(1))
+    .subscribe(tutores => {
+      this.petsOptions = tutores;
+    });
+  }
+
+  addNewPet(pet: Pet){
+    if(this.tutorId){
+      this.facade.novoTutorPet(this.tutorId, pet.id).subscribe((res) => {
+        console.log('Pet adicionado com sucesso');
+      })
+    }
+    else{
+      this.newPetsIds.push(pet.id)
+    }
+    this.listPets.push(pet);
+  }
+
+  removerPet(pet: Pet){
+    if(this.tutorId){
+      this.facade.deleteTutorPet(this.tutorId, pet.id).subscribe((res) => {
+        console.log('Tutor removido')
+      })
+    }
+    this.listPets = this.listPets.filter((p) => p.id != pet.id)
+  }
+
+  deleteTutor(){
+    if(this.tutorId){
+      this.facade.deleteTutor(this.tutorId).subscribe(()=> {
+        this.backtutores()
+      })
+    }
+  }
+
 }

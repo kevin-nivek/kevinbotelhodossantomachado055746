@@ -1,47 +1,162 @@
-<div class="p-4 max-w-lg mx-auto">
+<div class="p-4  mx-auto">
   <h1 class="text-xl font-bold mb-4">
     {{ edit ? 'Editar Tutor' : 'Novo Tutor' }}
   </h1>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
-@if (fotoPreviewUrl) {
-      <img
-        [(src)]="fotoPreviewUrl"
-        class="h-70 object-cover rounded mb-4"
-      />
-      <button class="px-4 py-2 bg-red-600 text-white rounded"
-        (click)="removerFoto(form.get('foto')?.value?.id)"
-        type="button">
-        Remover Foto
-      </button>
-    }
-    @if (!fotoPreviewUrl) {
-      <div>
-        <label class="block mb-1 font-medium">Adicionar Foto</label>
-        <input
-          type="file"
-          (change)="onFileSelected($event)"
-          class="w-full border rounded p-2" />
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4 w-full ">
+
+    <div class="flex gap-3 justify-between ">
+      <div class="flex gap-3">
+
+        <!-- IMAGEM -->
+        <div class="flex flex-col items-center justify-end">
+          @if (fotoPreviewUrl) {
+              <img
+                [(src)]="fotoPreviewUrl"
+                class="h-70 object-cover rounded mb-4"
+              />
+            <button class="px-4 py-2 bg-red-600 text-white rounded"
+              (click)="removerFoto(form.get('foto')?.value?.id)"
+              type="button">
+              Remover Foto
+            </button>
+          }
+          @if (!fotoPreviewUrl) {
+            <div>
+              <label class="block mb-1 font-medium">Adicionar Foto</label>
+              <input
+                type="file"
+                (change)="onFileSelected($event)"
+                class="w-full border rounded p-2" />
+            </div>
+          }
+
+        </div>
+        <!-- INPUTS -->
+
+        <div class="flex flex-col justify-between">
+          <div>
+            <label class="block mb-1 font-medium">Nome</label>
+            <input class="w-full border p-2 rounded" placeholder="Nome" formControlName="nome" />
+            @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
+              <small class="text-red-500">Nome é obrigatório</small>
+            }
+          </div>
+
+          <div>
+            <label class="block mb-1 font-medium">CPF</label>
+            <input class="w-full border p-2 rounded" placeholder="CPF" formControlName="cpf" />
+          </div>
+
+          <div>
+            <label class="block mb-1 font-medium">Telefone</label>
+            <input class="w-full border p-2 rounded" placeholder="Telefone" formControlName="telefone" />
+          </div>
+
+          <div>
+            <label class="block mb-1 font-medium">Email</label>
+            <input class="w-full border p-2 rounded" placeholder="Email" formControlName="email" />
+          </div>
+
+          <div>
+            <label class="block mb-1 font-medium">Endereco</label>
+            <input class="w-full border p-2 rounded" placeholder="Endereço" formControlName="endereco" />
+          </div>
+
+          <div class="flex gap-4">
+            <button
+              class="w-full bg-blue-600 text-white py-2 rounded"
+              type="button"
+              (click)="submit()"
+            >
+              Salvar
+            </button>
+
+            <button
+              type="button"
+              class="px-4 py-2 border rounded"
+              (click)="backtutores()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <!-- PETS -->
+        <div class="flex flex-col ">
+          @for (pet of listPets ; track pet.id) {
+            <div class="grid grid-cols-[1fr_3fr_1fr] items-center-safe gap-2 mb-2">
+
+              <img
+                [src]="pet.foto?.url"
+                class="h-16 w-16 rounded-full inline-block mr-2 object-cover"
+                alt="sem imagem"
+              />
+              <div class="flex flex-col items-start ">
+                <span>{{ pet.nome }}</span>
+                <span>{{ pet.raca }}</span>
+                <span>{{ pet.idade }}</span>
+              </div>
+
+              <button
+                type="button"
+                class="max-h-10 px-2 py-1 bg-red-600 text-white rounded"
+                (click)="removerPet(pet)">
+                Remover
+              </button>
+            </div>
+          }
+        </div>
       </div>
-    }
-    <input class="w-full border p-2 rounded" placeholder="Nome" formControlName="nome" />
-    <input class="w-full border p-2 rounded" placeholder="CPF" formControlName="cpf" />
-    <input class="w-full border p-2 rounded" placeholder="Telefone" formControlName="telefone" />
-    <input class="w-full border p-2 rounded" placeholder="Email" formControlName="email" />
-    <input class="w-full border p-2 rounded" placeholder="Endereço" formControlName="endereco" />
 
-    <button
-      class="w-full bg-blue-600 text-white py-2 rounded"
-      type="submit"
-    >
-      Salvar
-    </button>
+      <div class="flex-1 flex-col w-full">
+      <!-- BUSCA DE Pets -->
+        <h3 class="block mb-1 font-medium">Buscar Pets</h3>
+      <div class="flex items-center justify-center">
+        <div class="flex w-full items-center  justify-center ">
+          <input
+          type="text"
+          placeholder="Buscar por nome"
+          class="border p-2 mb-4 mt-4 w-full  inline-block"
+          formControlName="nomePetSearch"
+          />
+          <button class="ml-2 px-4 py-2 bg-blue-600 text-white font-bold rounded inline-flex items-center gap-2"
+          (click)="searchPet()"
+          type="button"
+          >
+            <span class="material-icons text-sm ">search</span>
+            Buscar
+          </button>
+        </div>
+      </div>
 
-    <button
-      type="button"
-      class="px-4 py-2 border rounded"
-      (click)="backtutores()">
-      Cancelar
-    </button>
+      <!-- Lista de resultados -->
+      <div class="flex flex-wrap gap-2">
+        @for (petOption of (pets$ | async); track petOption.id) {
+          <div class="flex flex-col p-2 items-start border rounded-2xl"
+            (click)="addNewPet(petOption)"
+          >
+            <img
+              [src]="petOption.foto?.url"
+              class="h-16 w-16 rounded-b-lg inline-block mr-2 object-cover"
+              alt="sem imagem"
+            />
+            <div class="flex flex-col w-40 wrap-break-word">
+              <span><strong>{{petOption.nome}}</strong> </span>
+              <span>Raça: {{petOption.raca}}</span>
+              <span>Idade: {{petOption.idade}}</span>
+            </div>
+          </div>
+        }
+
+      </div>
+    </div>
+
+    </div>
+
+
+    <button (click)="deleteTutor()">DEKETE</button>
+
   </form>
 </div>
+
+

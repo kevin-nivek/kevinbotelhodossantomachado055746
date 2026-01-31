@@ -1,21 +1,63 @@
+@let page = (page$ | async);
+@let pageCount = (pageCount$ | async);
+
 <div class="p-4">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-xl font-bold">Tutores</h1>
+  <div>
+    <h1 class="text-xl font-bold">Tutores Cadastrados</h1>
+
+    <div class="flex items-center ">
+      <input
+      type="text"
+      placeholder="Buscar por nome"
+      class="border p-2 mb-4 mt-4 w-full md:w-1/3 inline-block"
+      [(ngModel)]="nomeSearch"
+      />
+      <button class="ml-2 px-4 py-2 bg-blue-600 text-white font-bold rounded inline-flex items-center gap-2"
+      (click)="search()">
+        <span class="material-icons text-sm ">search</span>
+        Buscar
+      </button>
+
+
+
+    </div>
   </div>
 
-  <ul class="space-y-2">
-    @for (tutor of tutores$ | async; track tutor.id) {
-      <li class="border p-3 rounded" (click)="viewDetail(tutor.id)">
-        @if (tutor.foto?.url) {
-          <img
-            [src]="tutor.foto?.url"
-            class="h-10  rounded-full inline-block mr-2 object-cover"
-          />
-        }
-        <strong>{{ tutor.nome }}</strong><br>
-        CPF: {{ tutor.cpf }}<br>
-        Email: {{ tutor.email }}
-      </li>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    @for (tutor of (tutores$ | async) ; track tutor.id) {
+    <div
+      class="border rounded shadow p-4 cursor-pointer flex flex-col items-center justify-center hover:shadow-lg transition "
+      (click)="viewDetail(tutor.id)"
+    >
+      @if (tutor.foto?.url) {
+      <img
+        [src]="tutor.foto?.url"
+        class="h-60 mb-2 rounded"
+      />
+      }
+
+      <h2 class="font-semibold text-lg">{{ tutor.nome }}</h2>
+      <p>Email: {{ tutor.email }}</p>
+      <p>telefone: {{ tutor.telefone }}</p>
+    </div>
     }
-  </ul>
+  </div>
+
+  <button
+    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+  (click)="nextPage(page!)"
+  >
+    Próxima Página
+  </button>
+
+  <span class="px-4 py-2">
+    Página {{ page! + 1 }} de {{ pageCount }}
+  </span>
+
+  <button
+    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+  (click)="previousPage(page!)"
+  >
+    Página Anterior
+  </button>
 </div>

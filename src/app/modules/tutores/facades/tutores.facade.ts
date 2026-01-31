@@ -63,7 +63,16 @@ export class TutoresFacade {
   }
 
   deleteTutorPet(tutorId: number, fotoId: number) {
-    return this.service.deleteFoto(tutorId, fotoId);
+    return this.service.removerTutorPet(tutorId, fotoId);
   }
 
+  deleteTutor(tutorId: number){
+    return this.service.deleteTutor(tutorId);
+  }
+  reloadList() {
+    this.loadTutores(
+      0,
+      10
+    );
+  }
 }
