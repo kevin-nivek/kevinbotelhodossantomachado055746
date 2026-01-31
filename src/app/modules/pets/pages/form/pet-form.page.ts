@@ -4,12 +4,13 @@ import { Form, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { PetsFacade } from "../../facades/pets.facade";
-import { filter, take } from "rxjs";
-import { ChangeDetectorRef } from '@angular/core';
+import { filter, Observable, take } from "rxjs";
+import { TutoresFacade } from "../../../tutores/facades/tutores.facade";
+import { Tutor } from "../../../../core/models/tutor.model";
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,],
   templateUrl: './pet-form.page.html',
 })
 export class PetFormPage implements OnInit {
@@ -21,17 +22,18 @@ export class PetFormPage implements OnInit {
   fotoDeletedId?: number;
   selectedFile?: File | null;
   fotoPreviewUrl?: string | null;
+  tutoresList: Tutor[] = [];
 
   constructor(
     private fb: FormBuilder,
     private facade: PetsFacade,
     private router: Router,
     private route: ActivatedRoute,
+    private tutoresFacade: TutoresFacade,
   ) { }
 
   ngOnInit(): void {
     this.initForm();
-
   }
 
 
@@ -41,7 +43,8 @@ export class PetFormPage implements OnInit {
       nome: ['', Validators.required],
       raca: [''],
       idade: [''],
-      foto: ['']
+      foto: [''],
+      tutores: [[]],
     });
 
   this.route.paramMap.subscribe(params => {
@@ -66,6 +69,8 @@ export class PetFormPage implements OnInit {
       this.facade.selectedPet$.pipe(filter(Boolean), take(1)).subscribe(pet => {
         if (pet && pet.foto) {
           this.fotoPreviewUrl = pet.foto.url;
+          this.tutoresList = pet.tutores || [];
+
         }
       });
     }
@@ -76,25 +81,25 @@ export class PetFormPage implements OnInit {
 
     if (this.edit) {
       this.facade.editPet(this.petId!, this.form?.value);
-      if(this.selectedFile){
+      if(this.selectedFile || this.fotoDeletedId){
         this.uploadFoto(this.petId!);
       }
 
     } else {
-      this.facade.novoPet(this.form?.value).subscribe(pet => {
+      const fileToUpload = this.selectedFile;
+      this.facade.novoPet(this.form?.value, ).subscribe(pet => {
         const newPetId = pet.id;
-        if(this.selectedFile){
+        if(this.selectedFile || fileToUpload){
+          this.selectedFile = fileToUpload
           this.uploadFoto(newPetId);
         }
-
       });
     }
     this.bakHome();
   }
 
   bakHome() {
-    console.log('VOLTANDO HOME');
-
+    this.facade.reloadList();
     this.router.navigate(['/pets']);
   }
 
@@ -136,5 +141,20 @@ export class PetFormPage implements OnInit {
   ngOnDestroy(): void {
     this.selectedFile = null;
     this.fotoPreviewUrl = null;
+  }
+
+  removerTutor(tutor: Tutor){
+    if(this.petId){
+      this.tutoresFacade.deleteTutorPet(tutor.id, this.petId).subscribe((res) => {
+      })
+    }
+    this.tutoresList = this.tutoresList.filter((tut) => tut.id != tutor.id)
+  }
+  deletePet(){
+    if(this.petId){
+      this.facade.deletePet(this.petId).subscribe(()=>{
+        this.bakHome()
+      })
+    }
   }
 }

@@ -58,4 +58,19 @@ export class PetsFacade  {
   deleteFotoPet(petId: number, fotoId: number) {
     return this.service.deleteFoto(petId, fotoId);
   }
+
+  reloadList() {
+    this.loadPets(
+      0,
+      10
+    );
+  }
+
+  deletePet(petId: number){
+    return this.service.deletePet(petId);
+  }
+
+  clearPets() {
+    this.petsSubject.next([]);
+  }
 }

@@ -1,82 +1,125 @@
 <form
   [formGroup]="form"
   (ngSubmit)="submit()"
-  class="max-w-lg mx-auto p-6 space-y-4">
+  class=" mx-auto p-6 space-y-4">
 
-  <h1 class="text-xl font-bold">
+  <h1 class="text-xl font-bold mb-6">
     {{ edit ? 'Editar Pet' : 'Cadastrar Pet' }}
   </h1>
-
-  @if (fotoPreviewUrl) {
-      <img
-        [(src)]="fotoPreviewUrl"
-        class="h-70 object-cover rounded mb-4"
-      />
-      <button class="px-4 py-2 bg-red-600 text-white rounded"
-        (click)="removerFoto(form.get('foto')?.value?.id)"
-        type="button">
-        Remover Foto
-      </button>
-    }
-    @if (!fotoPreviewUrl) {
-      <div>
-        <label class="block mb-1 font-medium">Adicionar Foto</label>
-        <input
-          type="file"
-          (change)="onFileSelected($event)"
-          class="w-full border rounded p-2" />
+  <div class="" >
+    <div class="flex justify-evenly gap-3 flex-wrap">
+      <!-- IMAGEM -->
+      <div class="flex flex-col items-center justify-center" >
+        <!-- Foto -->
+        @if (fotoPreviewUrl) {
+          <img
+            [(src)]="fotoPreviewUrl"
+            class="h-70 object-cover rounded mb-4"
+          />
+          <button class="px-4 py-2 bg-red-600 text-white rounded"
+            (click)="removerFoto(form.get('foto')?.value?.id)"
+            type="button">
+            Remover Foto
+          </button>
+        }
+        @if (!fotoPreviewUrl) {
+          <div>
+            <label class="block mb-1 font-medium">Adicionar Foto</label>
+            <input
+              type="file"
+              (change)="onFileSelected($event)"
+              class="w-full border rounded p-2" />
+          </div>
+        }
       </div>
-    }
-  <!-- Nome -->
-  <div>
-    <label class="block mb-1 font-medium">Nome</label>
-    <input
-      type="text"
-      formControlName="nome"
-      class="w-full border rounded p-2" />
+      <!-- INPUTS -->
+      <div class="flex flex-col justify-between">
+        <div>
+          <label class="block mb-1 font-medium">Nome</label>
+          <input
+            type="text"
+            formControlName="nome"
+            class="w-full border rounded p-2" />
 
-    @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
-      <small class="text-red-500">Nome é obrigatório</small>
-    }
+          @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
+            <small class="text-red-500">Nome é obrigatório</small>
+          }
+        </div>
+
+        <!-- Raça -->
+        <div>
+          <label class="block mb-1 font-medium">Raça</label>
+          <input
+            type="text"
+            formControlName="raca"
+            class="w-full border rounded p-2" />
+
+          @if (form.get('raca')?.invalid && form.get('raca')?.touched) {
+            <small class="text-red-500">Raça é obrigatória</small>
+          }
+        </div>
+
+        <!-- Idade -->
+        <div>
+          <label class="block mb-1 font-medium">Idade</label>
+          <input
+            type="number"
+            formControlName="idade"
+            class="w-full border rounded p-2" />
+        </div>
+
+          <!-- Botões -->
+      <div class="flex gap-4">
+        <button
+          type="button"
+          (click)="submit()"
+          [disabled]="form.invalid"
+          class="px-4 py-2 bg-blue-600 text-white rounded">
+          {{ edit ? 'Salvar' : 'Cadastrar' }}
+        </button>
+
+        <button
+          type="button"
+          class="px-4 py-2 border rounded"
+          (click)="bakHome()">
+          Cancelar
+        </button>
+      </div>
+      </div>
+      <!-- LISTA TUTORES -->
+      <div>
+        <h3 class="block mb-1 font-medium">Tutores Atuais</h3>
+        <div class=" p-2  overflow-y-auto">
+          @for (tutor of (tutoresList) ; track tutor.id) {
+            <div class="grid grid-cols-[1fr_3fr_1fr] items-center-safe gap-2 mb-2">
+
+              <img
+                [src]="tutor.foto?.url"
+                class="h-16 w-16 rounded-full inline-block mr-2 object-cover"
+                alt="sem imagem"
+              />
+              <div class="flex flex-col items-start ">
+                <span>{{ tutor.nome }}</span>
+                <span>{{ tutor.email }}</span>
+                <span>{{ tutor.telefone }}</span>
+              </div>
+
+              <button
+                type="button"
+                class="max-h-10 px-2 py-1 bg-red-600 text-white rounded"
+                (click)="removerTutor(tutor)">
+                Remover
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+
+
+
   </div>
 
-  <!-- Raça -->
-  <div>
-    <label class="block mb-1 font-medium">Raça</label>
-    <input
-      type="text"
-      formControlName="raca"
-      class="w-full border rounded p-2" />
-
-    @if (form.get('raca')?.invalid && form.get('raca')?.touched) {
-      <small class="text-red-500">Raça é obrigatória</small>
-    }
-  </div>
-
-  <!-- Idade -->
-  <div>
-    <label class="block mb-1 font-medium">Idade</label>
-    <input
-      type="number"
-      formControlName="idade"
-      class="w-full border rounded p-2" />
-  </div>
-
-  <!-- Botões -->
-  <div class="flex gap-4">
-    <button
-      type="submit"
-      [disabled]="form.invalid"
-      class="px-4 py-2 bg-blue-600 text-white rounded">
-      {{ edit ? 'Salvar' : 'Cadastrar' }}
-    </button>
-
-    <button
-      type="button"
-      class="px-4 py-2 border rounded"
-      (click)="bakHome()">
-      Cancelar
-    </button>
-  </div>
-
+  <button (click)="deletePet()">DELETE</button>
 </form>

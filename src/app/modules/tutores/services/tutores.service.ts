@@ -56,5 +56,7 @@ export class TutoresService {
   removerTutorPet(tutorId: number, petId: number) {
     return this.http.delete(`${this.apiUrl}/${tutorId}/pets/${petId}`);
   }
-
+  deleteTutor(tutorId: number){
+    return this.http.delete(`${this.apiUrl}/${tutorId}`);
+  }
 }

@@ -50,4 +50,8 @@ export class PetsService {
   deleteFoto(petId: number, fotoId: number) {
     return this.http.delete(`${this.apiUrl}/${petId}/fotos/${fotoId}`);
   }
+
+  deletePet(petId: number){
+    return this.http.delete(`${this.apiUrl}/${petId}`)
+  }
 }
