@@ -38,6 +38,6 @@ export class PetDetailPage implements OnInit{
   }
 
   backToList() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/pets']);
   }
 }

@@ -8,7 +8,7 @@ export const routes: Routes = [
     component: LoginPage
   },
   {
-    path: '',
+    path: 'pets',
     loadChildren: () =>
     import('./modules/pets/pets.routes').then(m => m.PET_ROUTES),
     canActivate: [authGuard]

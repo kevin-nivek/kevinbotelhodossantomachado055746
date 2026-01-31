@@ -73,6 +73,6 @@ export class TutorListPage implements OnInit {
   }
 
   goHome(){
-    this.router.navigate(['/']);
+    this.router.navigate(['/pets']);
   }
 }

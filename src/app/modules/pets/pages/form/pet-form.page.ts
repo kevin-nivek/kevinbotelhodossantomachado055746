@@ -95,7 +95,7 @@ export class PetFormPage implements OnInit {
   bakHome() {
     console.log('VOLTANDO HOME');
 
-    this.router.navigate(['/']);
+    this.router.navigate(['/pets']);
   }
 
   removerFoto(id: number){

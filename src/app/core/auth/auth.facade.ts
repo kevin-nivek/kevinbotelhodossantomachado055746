@@ -28,7 +28,7 @@ export class AuthFacade  {
       localStorage.setItem('expires_at', (Date.now() + res.expires_in * 1000).toString());
       this.logged$.next(true);
       // this.tokenSubject.next(res.access_token);
-      this.router.navigate(['/']);
+      this.router.navigate(['/pets']);
     });
   }
 
@@ -44,4 +44,3 @@ export class AuthFacade  {
     return !exp || Date.now() > Number(exp);
   }
 }
-// PAREI AQUI EM ->  ARQUITETURA CORRETA NO FRONT
