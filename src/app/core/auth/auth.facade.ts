@@ -1,13 +1,14 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { AuthService } from "./auth.service";
 import { BehaviorSubject } from "rxjs";
 import { Router } from "@angular/router";
+import { isPlatformBrowser } from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthFacade  {
-
+  private platformId = inject(PLATFORM_ID);
   private logged$ = new BehaviorSubject<boolean>(false);
   private tokenSubject = new BehaviorSubject<string | null>(null);
   token$ = this.tokenSubject.asObservable();
@@ -33,6 +34,9 @@ export class AuthFacade  {
   }
 
   get token() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
     return localStorage.getItem('token');
   }
   get refreshToken() {
@@ -40,6 +44,10 @@ export class AuthFacade  {
   }
 
   isTokenExpired(): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return true;
+    }
+
     const exp = localStorage.getItem('expires_at');
     return !exp || Date.now() > Number(exp);
   }

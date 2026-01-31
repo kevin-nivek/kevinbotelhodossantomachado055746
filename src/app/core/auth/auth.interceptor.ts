@@ -1,18 +1,22 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { Router } from "@angular/router";
 import { catchError, Observable, switchMap, throwError } from "rxjs";
 import { AuthFacade } from "./auth.facade";
 import { AuthService } from "./auth.service";
+import { isPlatformBrowser } from "@angular/common";
 
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthFacade);
   const authService = inject(AuthService);
   const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
   console.log(req.url);
-
-if (
+  if (!isPlatformBrowser(platformId)) {
+    return next(req);
+  }
+  if (
     req.url.includes('/autenticacao/login') ||
     req.url.includes('/autenticacao/refresh')
   ) {
@@ -32,7 +36,7 @@ if (
         return next(clonedReq);
       }),
       catchError(err => {
-        if (err.status === 401) {
+        if (err.status === 401 || err.status === 404) {
           localStorage.clear();
           router.navigate(['/login']);
         }
@@ -51,7 +55,7 @@ if (
 
   return next(authReq).pipe(
     catchError(err => {
-      if (err.status === 401) {
+      if (err.status === 401 || err.status === 404) {
         localStorage.clear();
         router.navigate(['/login']);
       }
