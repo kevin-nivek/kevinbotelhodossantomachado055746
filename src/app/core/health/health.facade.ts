@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { error } from "console";
 import { BehaviorSubject } from "rxjs";
 import { HealthService } from "./heallth.service";
 
@@ -16,12 +15,7 @@ export class HealthFacade{
     this.service.checkHealth().subscribe({
       next: () => this.statusSubject.next('UP'),
       error: err => {
-        console.log(err);
-        console.log(err.status);
-
         if ([401, 403].includes(err.status)) {
-          console.log('UP');
-
           this.statusSubject.next('UP');
         } else {
           this.statusSubject.next('DOWN');

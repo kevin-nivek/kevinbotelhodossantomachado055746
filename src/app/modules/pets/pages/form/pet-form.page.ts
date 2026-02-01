@@ -7,6 +7,7 @@ import { PetsFacade } from "../../facades/pets.facade";
 import { filter, Observable, take } from "rxjs";
 import { TutoresFacade } from "../../../tutores/facades/tutores.facade";
 import { Tutor } from "../../../../core/models/tutor.model";
+import { of } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -47,7 +48,7 @@ export class PetFormPage implements OnInit {
       tutores: [[]],
     });
 
-  this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       this.edit = false;
       this.petId = undefined;
