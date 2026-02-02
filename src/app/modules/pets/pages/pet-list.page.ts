@@ -6,12 +6,13 @@ import { Observable } from "rxjs/internal/Observable";
 import { AsyncPipe } from "@angular/common";
 import { take } from "rxjs";
 import { Router } from "@angular/router";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 
 @Component({
   standalone: true,
   selector: 'app-pet-list',
   templateUrl: './pet-list.page.html',
-  imports: [FormsModule, AsyncPipe],
+  imports: [FormsModule, AsyncPipe, PaginatorComponent],
 })
 export class PetListPage implements OnInit {
 
@@ -40,27 +41,13 @@ export class PetListPage implements OnInit {
     this.facade.loadPets(0, this.sizeSearch, this.nomeSearch, this.racaSearch);
   }
 
-  nextPage(page: number) {
-    this.pageCount$.pipe(take(1)).subscribe(pageCount => {
-      if (page + 1 < pageCount) {
-        this.facade.loadPets(
-          page + 1,
-          this.sizeSearch,
-          this.nomeSearch,
-          this.racaSearch
-        );
-      }
-    });
-  }
-  previousPage(page: number) {
-    if (page - 1 >= 0) {
-      this.facade.loadPets(
+  onPageChange(page: number) {
+    this.facade.loadPets(
         page - 1,
         this.sizeSearch,
         this.nomeSearch,
         this.racaSearch
       );
-    }
   }
 
   viewDetail(id: number) {

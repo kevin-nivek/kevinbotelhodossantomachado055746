@@ -1,0 +1,75 @@
+<nav class="flex items-center gap-2">
+
+  <button
+  class="px-3 py-1 border rounded"
+  [disabled]="currentPage === 1"
+  (click)="goTo(1)">
+  ⏮ Primeira
+  </button>
+
+
+
+  <button
+  class="px-3 py-1 border rounded"
+  [disabled]="currentPage === 1"
+  (click)="goTo(currentPage - 1)">
+  ◀ Anterior
+  </button>
+
+  @if (currentPage +1 > totalPages && currentPage -2 > 0) {
+    <button
+    class="px-3 py-1 border rounded"
+    (click)="goTo(currentPage - 2)">
+    {{ currentPage - 2 }}
+    </button>
+  }
+
+  @if (currentPage > 1) {
+    <button
+    class="px-3 py-1 border rounded"
+    (click)="goTo(currentPage - 1)">
+    {{ currentPage - 1 }}
+  </button>
+  }
+
+
+  <button
+  class="px-3 py-1 border rounded bg-blue-600 text-white">
+  {{ currentPage }}
+  </button>
+
+
+  @if (currentPage < totalPages) {
+    <button
+    class="px-3 py-1 border rounded"
+    (click)="goTo(currentPage + 1)">
+    {{ currentPage + 1 }}
+    </button>
+  }
+
+
+  @if (currentPage -1 < 1 && currentPage + 2 <= totalPages) {
+    <button
+    class="px-3 py-1 border rounded"
+    (click)="goTo(currentPage + 2)">
+    {{ currentPage + 2 }}
+  </button>
+  }
+
+
+  <button
+  class="px-3 py-1 border rounded"
+  [disabled]="currentPage === totalPages"
+  (click)="goTo(currentPage + 1)">
+  Próxima ▶
+  </button>
+
+
+
+  <button
+  class="px-3 py-1 border rounded"
+  [disabled]="currentPage === totalPages"
+  (click)="goTo(totalPages)">
+  Última ⏭
+  </button>
+</nav>

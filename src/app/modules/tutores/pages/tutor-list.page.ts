@@ -6,12 +6,13 @@ import { TutoresFacade } from "../facades/tutores.facade";
 import { take } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { AsyncPipe } from "@angular/common";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 
 @Component({
   selector: 'app-tutor-list-page',
   templateUrl: './tutor-list.page.html',
   standalone: true,
-  imports: [FormsModule, AsyncPipe],
+  imports: [FormsModule, AsyncPipe, PaginatorComponent],
 
 })
 export class TutorListPage implements OnInit {
@@ -42,26 +43,12 @@ export class TutorListPage implements OnInit {
     this.facade.loadTutores(0, this.sizeSearch, this.nomeSearch);
   }
 
-  nextPage(page: number) {
-    this.pageCount$.pipe(take(1)).subscribe(pageCount => {
-      if (page + 1 < pageCount) {
-        this.facade.loadTutores(
-          page + 1,
-          this.sizeSearch,
-          this.nomeSearch
-        );
-      }
-    });
-  }
-
-  previousPage(page: number) {
-    if (page - 1 >= 0) {
-      this.facade.loadTutores(
+  onPageChange(page: number) {
+    this.facade.loadTutores(
         page - 1,
         this.sizeSearch,
         this.nomeSearch
       );
-    }
   }
 
   viewDetail(id: number) {

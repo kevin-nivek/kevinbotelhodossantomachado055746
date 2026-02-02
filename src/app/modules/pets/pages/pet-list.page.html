@@ -42,21 +42,13 @@
     }
   </div>
 
-  <button
-    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-  (click)="nextPage(page!)"
-  >
-    Próxima Página
-  </button>
 
-  <span class="px-4 py-2">
-    Página {{ page! + 1 }} de {{ pageCount }}
-  </span>
 
-  <button
-    class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-  (click)="previousPage(page!)"
+  <app-paginator
+    [currentPage]="page! + 1"
+    [totalPages]="pageCount!"
+    (pageChange)="onPageChange($event)"
   >
-    Página Anterior
-  </button>
+  </app-paginator>
+
 </div>
