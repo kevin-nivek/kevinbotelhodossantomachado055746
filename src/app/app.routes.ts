@@ -3,7 +3,13 @@ import { LoginPage } from './pages/login/login.page';
 import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
-   {
+
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'login'
+  },
+  {
     path: 'login',
     component: LoginPage
   },

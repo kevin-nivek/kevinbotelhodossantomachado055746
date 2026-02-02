@@ -12,7 +12,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const platformId = inject(PLATFORM_ID);
-  console.log(req.url);
   if (!isPlatformBrowser(platformId)) {
     return next(req);
   }
@@ -36,7 +35,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return next(clonedReq);
       }),
       catchError(err => {
-        if (err.status === 401 || err.status === 404) {
+        if (err.status === 401 || err.status === 404 || err.status == 0) {
           localStorage.clear();
           router.navigate(['/login']);
         }
@@ -55,7 +54,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError(err => {
-      if (err.status === 401 || err.status === 404) {
+      if (err.status === 401 || err.status === 404 || err.status == 0) {
         localStorage.clear();
         router.navigate(['/login']);
       }
