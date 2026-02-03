@@ -23,23 +23,23 @@
     </div>
   </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     @for (tutor of (tutores$ | async) ; track tutor.id) {
-    <div
-      class="border rounded shadow p-4 cursor-pointer flex flex-col items-center justify-center hover:shadow-lg transition "
-      (click)="viewDetail(tutor.id)"
-    >
-      @if (tutor.foto?.url) {
-      <img
-        [src]="tutor.foto?.url"
-        class="h-60 mb-2 rounded"
-      />
-      }
+      <div
+        class="border rounded shadow p-4 cursor-pointer flex flex-col items-center justify-center hover:shadow-lg transition "
+        (click)="viewDetail(tutor.id)"
+      >
+        @if (tutor.foto?.url) {
+          <img
+            [src]="tutor.foto?.url"
+            class="h-60 mb-2 rounded"
+          />
+        }
 
-      <h2 class="font-semibold text-lg">{{ tutor.nome }}</h2>
-      <p>Email: {{ tutor.email }}</p>
-      <p>telefone: {{ tutor.telefone }}</p>
-    </div>
+        <h2 class="font-semibold text-lg">{{ tutor.nome }}</h2>
+        <p>Email: {{ tutor.email }}</p>
+        <p>telefone: {{ tutor.telefone }}</p>
+      </div>
     }
   </div>
   <app-paginator

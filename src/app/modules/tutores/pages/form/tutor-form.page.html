@@ -1,3 +1,7 @@
+@let pageP = (pagePet$ | async);
+@let countP = (contPagePet$ | async);
+@let petsList = (pets$ | async);
+
 <div class="p-4  mx-auto">
   <h1 class="text-xl font-bold mb-4">
     {{ edit ? 'Editar Tutor' : 'Novo Tutor' }}
@@ -5,15 +9,19 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4 w-full ">
 
-    <div class="flex gap-3 justify-between ">
-      <div class="flex gap-3">
+    <div class="flex flex-wrap gap-3 justify-between ">
+      <div class="flex flex-3 flex-wrap gap-3">
 
-        <!-- IMAGEM -->
-        <div class="flex flex-col items-center justify-end">
-          @if (fotoPreviewUrl) {
+        <div class="flex flex-1 flex-wrap  flex-col items-center ">
+          <div class="self-start">
+            <h3 class="block mb-1 font-medium">Dados do Tutor</h3>
+          </div>
+
+          <div class="flex flex-col items-center ">
+            @if (fotoPreviewUrl) {
               <img
                 [(src)]="fotoPreviewUrl"
-                class="h-70 object-cover rounded mb-4"
+                class="h-70 object-cover mb-4 border rounded border-zinc-600"
               />
             <button class="px-4 py-2 bg-red-600 text-white rounded"
               (click)="removerFoto(form.get('foto')?.value?.id)"
@@ -22,55 +30,76 @@
             </button>
           }
           @if (!fotoPreviewUrl) {
-            <div>
+
+            <div class="flex flex-col items-center">
               <label class="block mb-1 font-medium">Adicionar Foto</label>
+
               <input
                 type="file"
+                id="foto"
                 (change)="onFileSelected($event)"
-                class="w-full border rounded p-2" />
+                class="hidden"
+              />
+
+              <label
+                for="foto"
+                class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded cursor-pointer transition"
+              >
+                <span class="material-icons text-[20px]">upload</span>
+                Escolher foto
+              </label>
             </div>
           }
-
-        </div>
-        <!-- INPUTS -->
-
-        <div class="flex flex-col justify-between">
-          <div>
-            <label class="block mb-1 font-medium">Nome</label>
-            <input class="w-full border p-2 rounded" placeholder="Nome" formControlName="nome" />
-            @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
-              <small class="text-red-500">Nome é obrigatório</small>
-            }
           </div>
 
-          <div>
-            <label class="block mb-1 font-medium">CPF</label>
-            <input class="w-full border p-2 rounded" placeholder="CPF" formControlName="cpf" />
+          <div class="flex flex-col justify-between w-full">
+            <div>
+              <label class="block mb-1 font-medium">Nome</label>
+              <input class="w-full border p-2 rounded" placeholder="Nome" formControlName="nome" />
+              @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
+                <small class="text-red-500">Nome é obrigatório</small>
+              }
+            </div>
+
+            <div>
+              <label class="block mb-1 font-medium">CPF</label>
+              <input class="w-full border p-2 rounded"
+                mask="000.000.000-00"
+                placeholder="000.000.000-00" formControlName="cpf" />
+            </div>
+
+            <div>
+              <label class="block mb-1 font-medium">Telefone</label>
+              <input
+                class="w-full border p-2 rounded"
+                mask="(00) 00000-0000"
+                placeholder="(00) 00000-0000" formControlName="telefone" />
+            </div>
+
+            <div>
+              <label class="block mb-1 font-medium">Email</label>
+              <input class="w-full border p-2 rounded" placeholder="Email" formControlName="email" />
+            </div>
+
+            <div>
+              <label class="block mb-1 font-medium">Endereco</label>
+              <input class="w-full border p-2 rounded" placeholder="Endereço" formControlName="endereco" />
+            </div>
+
+
           </div>
 
-          <div>
-            <label class="block mb-1 font-medium">Telefone</label>
-            <input class="w-full border p-2 rounded" placeholder="Telefone" formControlName="telefone" />
-          </div>
-
-          <div>
-            <label class="block mb-1 font-medium">Email</label>
-            <input class="w-full border p-2 rounded" placeholder="Email" formControlName="email" />
-          </div>
-
-          <div>
-            <label class="block mb-1 font-medium">Endereco</label>
-            <input class="w-full border p-2 rounded" placeholder="Endereço" formControlName="endereco" />
-          </div>
-
-          <div class="flex gap-4">
-            <button
-              class="w-full bg-blue-600 text-white py-2 rounded"
+          <div class="flex w-full mt-2 gap-4 items-center justify-evenly" >
+            <div >
+              <button
+              class=" bg-blue-600 text-white py-2 px-4 rounded"
               type="button"
               (click)="submit()"
-            >
-              Salvar
-            </button>
+              >
+                Salvar
+              </button>
+
+            </div>
 
             <button
               type="button"
@@ -79,22 +108,23 @@
               Cancelar
             </button>
           </div>
+
         </div>
 
-        <!-- PETS -->
-        <div class="flex flex-col ">
+        <div class="flex flex-1 flex-col border-l border-r border-zinc-600 p-2 pt-0 max-h">
+          <h3 class="block mb-1 font-medium">Pets do Tutor</h3>
           @for (pet of listPets ; track pet.id) {
-            <div class="grid grid-cols-[1fr_3fr_1fr] items-center-safe gap-2 mb-2">
+            <div class="grid grid-cols-[1fr_3fr_1fr] items-center-safe gap-2 mb-2 border rounded border-zinc-600 p-2">
 
               <img
                 [src]="pet.foto?.url"
                 class="h-16 w-16 rounded-full inline-block mr-2 object-cover"
                 alt="sem imagem"
               />
-              <div class="flex flex-col items-start ">
-                <span>{{ pet.nome }}</span>
-                <span>{{ pet.raca }}</span>
-                <span>{{ pet.idade }}</span>
+              <div class="flex flex-col flex-wrap items-start">
+                <span>Nome: {{ pet.nome }}</span>
+                <span>Raça: {{ pet.raca }}</span>
+                <span>Idade: {{ pet.idade }} ano(s)</span>
               </div>
 
               <button
@@ -106,55 +136,81 @@
             </div>
           }
         </div>
+
       </div>
 
-      <div class="flex-1 flex-col w-full">
-      <!-- BUSCA DE Pets -->
-        <h3 class="block mb-1 font-medium">Buscar Pets</h3>
-      <div class="flex items-center justify-center">
-        <div class="flex w-full items-center  justify-center ">
-          <input
-          type="text"
-          placeholder="Buscar por nome"
-          class="border p-2 mb-4 mt-4 w-full  inline-block"
-          formControlName="nomePetSearch"
-          />
-          <button class="ml-2 px-4 py-2 bg-blue-600 text-white font-bold rounded inline-flex items-center gap-2"
-          (click)="searchPet()"
-          type="button"
-          >
-            <span class="material-icons text-sm ">search</span>
-            Buscar
-          </button>
-        </div>
-      </div>
+      <div class="flex-3 flex-wrap flex-col w-full">
 
-      <!-- Lista de resultados -->
-      <div class="flex flex-wrap gap-2">
-        @for (petOption of (pets$ | async); track petOption.id) {
-          <div class="flex flex-col p-2 items-start border rounded-2xl"
-            (click)="addNewPet(petOption)"
-          >
-            <img
-              [src]="petOption.foto?.url"
-              class="h-16 w-16 rounded-b-lg inline-block mr-2 object-cover"
-              alt="sem imagem"
+        <h3 class="block mb-1 font-medium">Adicionar Pets</h3>
+        <div class="flex items-center justify-center">
+          <div class="flex w-full items-center  justify-center ">
+            <input
+            type="text"
+            placeholder="Buscar pet por nome"
+            class="border p-2 mb-4 mt-4 w-full  inline-block"
+            formControlName="nomePetSearch"
             />
-            <div class="flex flex-col w-40 wrap-break-word">
-              <span><strong>{{petOption.nome}}</strong> </span>
-              <span>Raça: {{petOption.raca}}</span>
-              <span>Idade: {{petOption.idade}}</span>
+            <button class="ml-2 px-4 py-2 bg-blue-600 text-white font-bold rounded inline-flex items-center gap-2"
+            (click)="searchPet()"
+            type="button"
+            >
+              <span class="material-icons text-sm ">search</span>
+              Buscar
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          @for (petOption of (pets$ | async); track petOption.id) {
+            <div class="flex flex-col p-2 items-start border rounded-2xl hover:shadow-lg hover:cursor-pointer transition"
+              (click)="addNewPet(petOption)"
+            >
+              <img
+                [src]="petOption.foto?.url"
+                class="h-16 w-16 rounded-b-lg inline-block mr-2 object-cover"
+                alt="sem imagem"
+              />
+              <div class="flex flex-col w-40 wrap-break-word">
+                <span><strong>{{petOption.nome}}</strong> </span>
+                <span>Raça: {{petOption.raca}}</span>
+                <span>Idade: {{petOption.idade}}</span>
+              </div>
             </div>
+          }
+
+        </div>
+
+
+        @if(countP! > 1 && petsList?.length){
+          <div class="flex justify-evenly w-full mt-2.5 items-center">
+
+            <button
+              type="button"
+              class="px-3 py-1 border rounded flex hover:cursor-pointer"
+              [disabled]="pageP === 0"
+              (click)="searchPet(pageP! - 1)">
+                <span class="material-symbols-outlined">chevron_left</span> Anterior
+            </button>
+
+            <button
+            class="px-3 py-1 border rounded bg-blue-600 text-white">
+              Página {{pageP!+ 1 }} de {{countP}}
+            </button>
+            <button
+              type="button"
+              class="px-3 py-1 border rounded flex hover:cursor-pointer"
+              [disabled]="pageP! === countP! - 1"
+              (click)="searchPet(pageP! + 1)">
+                Próxima <span class="material-symbols-outlined">
+                chevron_right
+                </span>
+            </button>
           </div>
         }
 
       </div>
-    </div>
 
     </div>
-
-
-    <button (click)="deleteTutor()">DEKETE</button>
 
   </form>
 </div>

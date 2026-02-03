@@ -1,17 +1,20 @@
-import { CommonModule } from "@angular/common";
+import { AsyncPipe, CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { TutoresFacade } from "../../facades/tutores.facade";
 import { filter, Observable, take } from "rxjs";
 import { Router } from "@angular/router";
 import { Pet } from "../../../../core/models/pet.model";
 import { PetsFacade } from "../../../pets/facades/pets.facade";
+import { NgxMaskDirective } from "ngx-mask";
+import { AlertComponent } from "../../../../shared/components/alert/alert.component";
+import { AlertService } from "../../../../shared/components/alert/alert.service";
 
 @Component({
   selector: 'app-tutor-form-page',
   templateUrl: './tutor-form.page.html',
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective, AsyncPipe]
 })
 
 export class TutorFormPage implements OnInit {
@@ -25,12 +28,16 @@ export class TutorFormPage implements OnInit {
   fotoPreviewUrl?: string | null;
 
   listPets: Pet[] = [];
-
+  listPetsId: number[]= [];
   petsOptions: Pet[] =[]
   newPetsIds: number[] = [];
   deletedPetsIds: number[] = [];
   nomePetSearch: string = '';
   pets$: Observable<Pet[]> | undefined;
+
+  pagePet$:Observable<number> | undefined;
+  contPagePet$: Observable<number> |undefined;
+
 
   constructor(
     private fb: FormBuilder,
@@ -38,6 +45,7 @@ export class TutorFormPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private petsFacade: PetsFacade,
+    private alert: AlertService
   )
   { }
 
@@ -45,11 +53,13 @@ export class TutorFormPage implements OnInit {
     this.initForm();
     this.petsFacade.clearPets()
     this.pets$ = this.petsFacade.pets$;
+    this.pagePet$ = this.petsFacade.page$;
+    this.contPagePet$ = this.petsFacade.pageCount$;
   }
 
   initForm() {
     this.form = this.fb.group({
-      nome: [''],
+      nome: ['', Validators.required],
       telefone: [''],
       email: [''],
       endereco: [''],
@@ -90,21 +100,35 @@ export class TutorFormPage implements OnInit {
   }
 
   submit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     if (this.edit && this.tutorId) {
-      this.facade.editTutor(this.tutorId, this.form.value);
-      if(this.selectedFile){
-        this.uploadFoto(this.tutorId!);
-      }
+      this.facade.editTutor(this.tutorId, this.form.value).subscribe({
+        next: ()=>{
+          this.alert.success('Tutor atualizado com sucesso')
+          if(this.selectedFile ||  this.fotoDeletedId){
+            const deletedFotos = this.fotoDeletedId!
+            this.uploadFoto(this.tutorId!, deletedFotos);
+          }
+        },
+        error: () => {
+          this.alert.error('Erro ao vincular pet');
+        }
+
+      })
+
     } else {
       const fileToUpload = this.selectedFile;
       const idsPetsList = this.newPetsIds
       this.facade.novoTutor(this.form.value).subscribe( tutor => {
+        this.alert.success('Tutor criado com sucesso')
         const newTutorId = tutor.id;
         this.selectedFile = fileToUpload
         if(this.selectedFile){
-          this.uploadFoto(newTutorId);
+          this.uploadFoto(newTutorId, null);
         }
-
         for (const petId of idsPetsList) {
           this.facade.novoTutorPet(newTutorId, petId).subscribe((res)=>{
             console.log(res);
@@ -136,17 +160,16 @@ export class TutorFormPage implements OnInit {
     input.value = '';
   }
 
-
   removerFoto(id: number){
     this.form.get('foto')?.setValue(null);
     this.fotoDeletedId = id;
     this.fotoPreviewUrl = undefined;
   }
 
-  uploadFoto(tutorId: number) {
-    if(this.fotoDeletedId)
+  uploadFoto(tutorId: number, fotoDeleted: number | null) {
+    if(fotoDeleted)
     {
-      this.facade.deleteFotoTutor(tutorId, this.fotoDeletedId).subscribe(() => {
+      this.facade.deleteFotoTutor(tutorId, fotoDeleted).subscribe(() => {
       console.log('foto Excluida');
     });
     }
@@ -165,35 +188,64 @@ export class TutorFormPage implements OnInit {
     this.fotoPreviewUrl = null;
   }
 
-  searchPet(){
+  searchPet(pageP: number = 0){
     const nomeBusca =  this.form.get('nomePetSearch')?.value
-    this.petsFacade.loadPets(0, 1000000, nomeBusca);
+    this.listPetsId = this.listPets.map(pet => pet.id)
+    console.log(nomeBusca);
+
+    if(nomeBusca?.length < 1 || !nomeBusca) return
+    this.petsFacade.loadPets(pageP, 10, nomeBusca)
     this.petsFacade.pets$
     .pipe(take(1))
-    .subscribe(tutores => {
-      this.petsOptions = tutores;
+    .subscribe(pets => {
+      console.log("PET SUB");
+
+      this.petsOptions = pets;
     });
   }
 
-  addNewPet(pet: Pet){
-    if(this.tutorId){
-      this.facade.novoTutorPet(this.tutorId, pet.id).subscribe((res) => {
-        console.log('Pet adicionado com sucesso');
-      })
+  addNewPet(pet: Pet) {
+
+    if (this.listPetsId.includes(pet.id)) {
+      this.alert.warning('Pet já adicionado ao tutor');
+      return;
     }
-    else{
-      this.newPetsIds.push(pet.id)
+
+    if (this.tutorId) {
+      this.facade.novoTutorPet(this.tutorId, pet.id)
+        .subscribe({
+          next: () => {
+            this.listPets.push(pet);
+            this.listPetsId.push(pet.id);
+
+            this.alert.success('Pet adicionado com sucesso');
+          },
+          error: () => {
+            this.alert.error('Erro ao adicionar pet');
+          }
+        });
+
+      return;
     }
+
+    this.newPetsIds.push(pet.id);
     this.listPets.push(pet);
+    this.listPetsId.push(pet.id);
   }
 
   removerPet(pet: Pet){
     if(this.tutorId){
-      this.facade.deleteTutorPet(this.tutorId, pet.id).subscribe((res) => {
-        console.log('Tutor removido')
+      this.facade.deleteTutorPet(this.tutorId, pet.id).subscribe({
+        next: () => {
+          this.alert.info('Pet removido')
+        },
+        error: () => {
+          this.alert.error('Erro ao adicionar pet');
+        }
       })
     }
     this.listPets = this.listPets.filter((p) => p.id != pet.id)
+    this.listPetsId = this.listPetsId.filter((pId) => pId != pet.id)
   }
 
   deleteTutor(){
