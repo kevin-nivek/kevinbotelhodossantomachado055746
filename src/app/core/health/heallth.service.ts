@@ -10,7 +10,7 @@ export class HealthService{
 
   checkHealth(){
     return this.http.get(
-      `${enviroment.apiUrl}/pets`,
+      `${enviroment.apiUrl}/v1/pets`,
       { params: { page: 0, size: 1 } }
     );
   }
