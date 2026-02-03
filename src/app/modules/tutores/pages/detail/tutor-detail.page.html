@@ -1,34 +1,68 @@
 @let tutor = (tutor$ | async);
 
-@if (tutor) {
-  <div class="max-w-xl mx-auto p-6">
+<div class="p-4  mx-auto">
+  <h1 class="text-xl font-bold mb-4">
+    Tutor
+  </h1>
+  @if (tutor) {
+    <div class="flex gap-3 flex-wrap items-starts justify-center ">
 
-    @if (tutor.foto?.url) {
-      <img
-        [src]="tutor.foto?.url"
-        class="h-70 object-cover rounded mb-4"
-      />
-    }
+      <div class=" flex-2 p-6 flex flex-col items-center">
 
-    <h1 class="text-2xl font-bold mb-2">
-      {{ tutor.nome }}
-    </h1>
+        <div class="border border-zinc-600 rounded ">
+          @if (tutor.foto?.url) {
+            <img
+              [src]="tutor.foto?.url"
+              class="h-70 object-cover rounded mb-4"
+            />
+          }
+        </div>
+        <h1 class="text-2xl font-bold mb-2">
+          {{ tutor.nome }}
+        </h1>
+        <div class="flex flex-col gap-1 items-start">
+          <p><strong>CPF:</strong> {{ tutor.cpf }}</p>
+          <p><strong>Email:</strong> {{ tutor.email || 'Não informado' }}</p>
+          <p><strong>Telefone:</strong> {{ tutor.telefone  }}</p>
+          <p><strong>Endereço:</strong> {{ tutor.endereco || 'Não informado' }}</p>
+        </div>
 
-    <p><strong>CPF:</strong> {{ tutor.cpf }}</p>
-    <p><strong>Email:</strong> {{ tutor.email }}</p>
-    <p><strong>Telefone:</strong> {{ tutor.telefone || 'Não informado' }}</p>
-    <p><strong>Endereço:</strong> {{ tutor.endereco || 'Não informado' }}</p>
+        <div class="flex items-center justify-evenly w-full">
+          <button
+            class="mt-6 px-4 py-2 border rounded"
+            (click)="backToList()">
+            Voltar
+          </button>
+          <button
+            class="mt-6 px-4 py-2 border rounded bg-blue-600 text-white"
+            (click)="goToEdit()">
+            Editar
+          </button>
+        </div>
 
-    <button
-      class="mt-6 px-4 py-2 border rounded"
-      (click)="backToList()">
-      Voltar
-    </button>
-    <button
-      class="mt-6 px-4 py-2 border rounded bg-blue-600 text-white"
-      (click)="goToEdit()">
-      Editar
-    </button>
+      </div>
 
-  </div>
-}
+
+      <div class="flex flex-wrap flex-col border-l border-r border-zinc-600 p-2 pt-0 max-h">
+        <h3 class="block mb-1 font-medium">Pets do Tutor</h3>
+        @for (pet of listPets ; track pet.id) {
+          <div class="grid grid-cols-[1fr_3fr_1fr] items-center-safe gap-2 mb-2 border rounded border-zinc-600 p-2 w-full">
+
+            <img
+              [src]="pet.foto?.url"
+              class="h-16 min-w-16  rounded-full inline-block mr-2 object-cover"
+              alt="sem imagem"
+            />
+            <div class="flex flex-col flex-wrap items-start">
+              <span>Nome: {{ pet.nome }}</span>
+              <span>Raça: {{ pet.raca }}</span>
+              <span>Idade: {{ pet.idade }} ano(s)</span>
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+
+  }
+</div>

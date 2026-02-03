@@ -1,9 +1,10 @@
 import { AsyncPipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { Tutor } from "../../../../core/models/tutor.model";
-import { Observable } from "rxjs";
+import { filter, Observable, take } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TutoresFacade } from "../../facades/tutores.facade";
+import { Pet } from "../../../../core/models/pet.model";
 
 @Component({
   selector: 'app-tutor-detail-page',
@@ -14,6 +15,7 @@ import { TutoresFacade } from "../../facades/tutores.facade";
 export class TutorDetailPage implements OnInit {
   tutor$!: Observable<Tutor | null>
 
+  listPets: Pet[] = [];
 
   constructor(private facade: TutoresFacade,
     private router: Router,
@@ -23,6 +25,9 @@ export class TutorDetailPage implements OnInit {
 
   ngOnInit(): void {
     this.tutor$ = this.facade.selectedTutor$;
+    this.tutor$.pipe(filter(Boolean), take(1)).subscribe(tutor => {
+        this.listPets = tutor.pets || []
+    });
     const tutorId = this.route.snapshot.paramMap.get('id');
     if(tutorId){
       this.facade.loadTutorById(+tutorId);

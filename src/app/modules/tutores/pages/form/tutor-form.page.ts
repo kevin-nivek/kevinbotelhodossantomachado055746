@@ -90,8 +90,6 @@ export class TutorFormPage implements OnInit {
     if(this.edit){
       this.facade.selectedTutor$.pipe(filter(Boolean), take(1)).subscribe(tutor => {
         if (tutor && tutor.foto) {
-          console.log(tutor);
-
           this.fotoPreviewUrl = tutor.foto.url;
           this.listPets = tutor.pets || []
         }
@@ -126,9 +124,6 @@ export class TutorFormPage implements OnInit {
 
       const idsPetsList = this.newPetsIds
       this.facade.novoTutor(this.form.value).subscribe( tutor => {
-        console.log(tutor.id);
-        console.log(fileToUpload);
-
         const newTutorId = tutor.id;
         this.selectedFile = fileToUpload
         if(this.selectedFile){
@@ -136,8 +131,6 @@ export class TutorFormPage implements OnInit {
         }
         for (const petId of idsPetsList) {
           this.facade.novoTutorPet(newTutorId, petId).subscribe((res)=>{
-            console.log(res);
-
           })
 
         }
@@ -179,7 +172,7 @@ export class TutorFormPage implements OnInit {
     if(fotoDeleted)
     {
       this.facade.deleteFotoTutor(tutorId, fotoDeleted).subscribe(() => {
-      console.log('foto Excluida');
+      this.alert.info('foto Excluida');
     });
     }
     if (!this.selectedFile) return;
@@ -188,7 +181,7 @@ export class TutorFormPage implements OnInit {
     formData.append('foto', this.selectedFile);
 
     this.facade.novaFotoTutor(tutorId, formData).subscribe(() => {
-      console.log('foto salva');
+       this.alert.success('foto salva');
     });
   }
 
