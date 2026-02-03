@@ -1,12 +1,13 @@
 @let page = (page$ | async);
 @let pageCount = (pageCount$ | async);
+@let total = (total$ | async);
 
-<div class="p-4">
-  <div>
+<div class="p-4 w-full">
+  <div class="p-2">
     <h1 class="text-xl font-bold">Tutores Cadastrados</h1>
 
-    <div class="flex items-center justify-between">
-      <div class="flex items-center ">
+    <div class="flex items-center flex-wrap justify-between">
+      <div class="flex flex-2 items-center ">
         <input
         type="text"
         placeholder="Buscar por nome"
@@ -30,31 +31,49 @@
     </div>
 
   </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!--  -->
+  <div class="flex flex-wrap gap-2 p-2 w-full">
     @for (tutor of (tutores$ | async) ; track tutor.id) {
       <div
-        class="border rounded shadow p-4 cursor-pointer flex flex-col items-center justify-center hover:shadow-lg transition "
+        class="border rounded shadow p-4 cursor-pointer flex flex-col items-center justify-center hover:shadow-lg hover:bg-zinc-300 transition min-w-60 w-[19%]"
         (click)="viewDetail(tutor.id)"
       >
-        @if (tutor.foto?.url) {
-          <img
-            [src]="tutor.foto?.url"
-            class="h-60 mb-2 rounded"
-          />
-        }
+        <div class="border max-w-40 rounded border-zin-600">
 
-        <h2 class="font-semibold text-lg">{{ tutor.nome }}</h2>
-        <p>Email: {{ tutor.email }}</p>
-        <p>telefone: {{ tutor.telefone }}</p>
+          @if (tutor.foto?.url) {
+            <img
+              [src]="tutor.foto?.url"
+              class="h-40  object-fill mb-2 rounded"
+            />
+          }
+        </div>
+
+        <div>
+
+        </div>
+        <h2 class="font-semibold text-lg wrap-break-word">{{ tutor.nome }}</h2>
+        <div class="flex flex-col items-start">
+          <p>Email: {{ tutor.email }}</p>
+          <p>telefone: {{ tutor.telefone | telefone }}</p>
+        </div>
+
+      </div>
+    }
+    @if(total ==0){
+      <div class="w-full flex flex-col  items-center justify-center">
+        <h2 class="text-3xl font-bold">Nenhum Resultado Encontrado</h2>
+        <img class="h-[40vh]" src="https://http.cat/404" alt="Nenhum resultado Encontrado">
       </div>
     }
   </div>
-  <app-paginator
-    [currentPage]="page! + 1"
-    [totalPages]="pageCount!"
-    (pageChange)="onPageChange($event)"
-  >
-  </app-paginator>
+  <div class="w-full flex items-center justify-evenly mt-2">
+      <app-paginator
+      [currentPage]="page! + 1"
+      [totalPages]="pageCount!"
+      (pageChange)="onPageChange($event)"
+    >
+    </app-paginator>
+  </div>
+
 
 </div>

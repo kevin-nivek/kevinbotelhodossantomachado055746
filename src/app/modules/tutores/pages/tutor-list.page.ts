@@ -7,12 +7,13 @@ import { take } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { AsyncPipe } from "@angular/common";
 import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
+import { TelefonePipe } from "../../../shared/pipes/telefone-pipe";
 
 @Component({
   selector: 'app-tutor-list-page',
   templateUrl: './tutor-list.page.html',
   standalone: true,
-  imports: [FormsModule, AsyncPipe, PaginatorComponent],
+  imports: [FormsModule, AsyncPipe, PaginatorComponent, TelefonePipe],
 
 })
 export class TutorListPage implements OnInit {

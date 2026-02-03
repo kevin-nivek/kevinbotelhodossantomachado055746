@@ -18,9 +18,6 @@ export class PaginatorComponent {
   @Output() pageChange = new EventEmitter<number>();
 
   goTo(page: number){
-    console.log("pAGE emIt");
-    console.log(page);
-
     if (page < 1 || page > this.totalPages) return;
     this.pageChange.emit(page);
   }

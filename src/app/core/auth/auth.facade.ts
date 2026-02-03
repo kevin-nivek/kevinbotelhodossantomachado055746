@@ -22,8 +22,6 @@ export class AuthFacade  {
 
   login(username: string, password: string) {
     this.service.login(username, password).subscribe(res => {
-      console.log(res);
-
       localStorage.setItem('token', res.access_token);
       localStorage.setItem('refresh_token', res.refresh_token);
       localStorage.setItem('expires_at', (Date.now() + res.expires_in * 1000).toString());
