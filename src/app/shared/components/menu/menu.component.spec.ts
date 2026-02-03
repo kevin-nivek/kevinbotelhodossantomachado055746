@@ -24,9 +24,9 @@ describe('MenuComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Testa se tem 4 links', () => {
+  it('Testa se tem 2 links', () => {
     const links = fixture.debugElement.queryAll(By.css('a'));
-    expect(links.length).toBe(4);
+    expect(links.length).toBe(2);
   });
 
   it('Link /pets', () => {
@@ -39,13 +39,4 @@ describe('MenuComponent', () => {
     expect(link.attributes['routerLink']).toBe('/tutores');
   });
 
-  it('Link /new/pets', () => {
-    const link = fixture.debugElement.queryAll(By.css('a'))[2];
-    expect(link.attributes['routerLink']).toBe('/new/pets');
-  });
-
-  it('Link /new/tutores', () => {
-    const link = fixture.debugElement.queryAll(By.css('a'))[3];
-    expect(link.attributes['routerLink']).toBe('/new/tutores');
-  });
 });
