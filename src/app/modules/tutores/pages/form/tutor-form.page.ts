@@ -181,7 +181,7 @@ export class TutorFormPage implements OnInit {
     formData.append('foto', this.selectedFile);
 
     this.facade.novaFotoTutor(tutorId, formData).subscribe(() => {
-       this.alert.success('foto salva');
+      this.alert.success('foto salva');
     });
   }
 
@@ -200,7 +200,6 @@ export class TutorFormPage implements OnInit {
     this.petsFacade.pets$
     .pipe(take(1))
     .subscribe(pets => {
-      console.log("PET SUB");
 
       this.petsOptions = pets;
     });

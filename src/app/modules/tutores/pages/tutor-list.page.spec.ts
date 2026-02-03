@@ -19,7 +19,7 @@ describe('TutorListPage', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [TutorListPage], // standalone
+      imports: [TutorListPage],
       providers: [
         { provide: TutoresFacade, useValue: facade }
       ]
