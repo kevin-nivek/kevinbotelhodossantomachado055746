@@ -54,26 +54,32 @@
 
           <div class="flex flex-col justify-between w-full">
             <div>
-              <label class="block mb-1 font-medium">Nome</label>
-              <input class="w-full border p-2 rounded" placeholder="Nome" formControlName="nome" />
+              <label class="block mb-1 font-medium">Nome <span>*</span></label>
+              <input class="w-full border p-2 rounded" placeholder="Nome" formControlName="nome" required />
               @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
                 <small class="text-red-500">Nome é obrigatório</small>
               }
             </div>
 
             <div>
-              <label class="block mb-1 font-medium">CPF</label>
+              <label class="block mb-1 font-medium">CPF <span>*</span></label>
               <input class="w-full border p-2 rounded"
                 mask="000.000.000-00"
                 placeholder="000.000.000-00" formControlName="cpf" />
+              @if (form.get('cpf')?.invalid && form.get('cpf')?.touched) {
+                <small class="text-red-500">CPF é obrigatório</small>
+              }
             </div>
 
             <div>
-              <label class="block mb-1 font-medium">Telefone</label>
+              <label class="block mb-1 font-medium">Telefone <span>*</span></label>
               <input
                 class="w-full border p-2 rounded"
                 mask="(00) 00000-0000"
-                placeholder="(00) 00000-0000" formControlName="telefone" />
+                placeholder="(00) 00000-0000" formControlName="telefone"/>
+              @if (form.get('telefone')?.invalid && form.get('telefone')?.touched) {
+                <small class="text-red-500">Telefone é obrigatório</small>
+              }
             </div>
 
             <div>
@@ -104,7 +110,7 @@
             <button
               type="button"
               class="px-4 py-2 border rounded"
-              (click)="backtutores()">
+              (click)="backTutores()">
               Cancelar
             </button>
           </div>
@@ -118,7 +124,7 @@
 
               <img
                 [src]="pet.foto?.url"
-                class="h-16 w-16 rounded-full inline-block mr-2 object-cover"
+                class="h-16 min-w-16  rounded-full inline-block mr-2 object-cover"
                 alt="sem imagem"
               />
               <div class="flex flex-col flex-wrap items-start">
@@ -147,7 +153,7 @@
             <input
             type="text"
             placeholder="Buscar pet por nome"
-            class="border p-2 mb-4 mt-4 w-full  inline-block"
+            class="border p-2 mb-4 mt-4 min-w-40 w-full  inline-block"
             formControlName="nomePetSearch"
             />
             <button class="ml-2 px-4 py-2 bg-blue-600 text-white font-bold rounded inline-flex items-center gap-2"
@@ -167,7 +173,7 @@
             >
               <img
                 [src]="petOption.foto?.url"
-                class="h-16 w-16 rounded-b-lg inline-block mr-2 object-cover"
+                class="h-16 min-16 rounded-b-lg inline-block mr-2 object-cover"
                 alt="sem imagem"
               />
               <div class="flex flex-col w-40 wrap-break-word">

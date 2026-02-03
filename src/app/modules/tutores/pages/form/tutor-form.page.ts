@@ -60,10 +60,10 @@ export class TutorFormPage implements OnInit {
   initForm() {
     this.form = this.fb.group({
       nome: ['', Validators.required],
-      telefone: [''],
+      telefone: ['',Validators.required],
       email: [''],
       endereco: [''],
-      cpf: [''],
+      cpf: ['', Validators.required],
       foto: [''],
       pets: [[]],
       nomePetSearch: ['']
@@ -101,13 +101,16 @@ export class TutorFormPage implements OnInit {
 
   submit() {
     if (this.form.invalid) {
+      this.alert.error('Formulario Inválido')
       this.form.markAllAsTouched();
       return;
     }
+    const fileToUpload = this.selectedFile;
     if (this.edit && this.tutorId) {
       this.facade.editTutor(this.tutorId, this.form.value).subscribe({
         next: ()=>{
           this.alert.success('Tutor atualizado com sucesso')
+          this.selectedFile = fileToUpload
           if(this.selectedFile ||  this.fotoDeletedId){
             const deletedFotos = this.fotoDeletedId!
             this.uploadFoto(this.tutorId!, deletedFotos);
@@ -120,10 +123,12 @@ export class TutorFormPage implements OnInit {
       })
 
     } else {
-      const fileToUpload = this.selectedFile;
+
       const idsPetsList = this.newPetsIds
       this.facade.novoTutor(this.form.value).subscribe( tutor => {
-        this.alert.success('Tutor criado com sucesso')
+        console.log(tutor.id);
+        console.log(fileToUpload);
+
         const newTutorId = tutor.id;
         this.selectedFile = fileToUpload
         if(this.selectedFile){
@@ -136,16 +141,20 @@ export class TutorFormPage implements OnInit {
           })
 
         }
-
+        this.alert.success('Tutor criado com sucesso')
       })
     }
 
-    this.backtutores()
+    this.backTutores()
   }
 
-  backtutores() {
-    this.facade.reloadList()
-    this.router.navigate(['/tutores']);
+  backTutores() {
+    // this.facade.reloadList()
+    // setTimeout(() => {
+      this.facade.loadTutores(0,10,'')
+      this.router.navigate(['/tutores']);
+    // },200)
+
   }
 
   onFileSelected(event: Event) {
@@ -251,7 +260,7 @@ export class TutorFormPage implements OnInit {
   deleteTutor(){
     if(this.tutorId){
       this.facade.deleteTutor(this.tutorId).subscribe(()=> {
-        this.backtutores()
+        this.backTutores()
       })
     }
   }
