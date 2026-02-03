@@ -4,16 +4,16 @@
   class="px-3 py-1 border rounded"
   [disabled]="currentPage === 1"
   (click)="goTo(1)">
-  ⏮ Primeira
+  Primeira
   </button>
 
 
 
   <button
-  class="px-3 py-1 border rounded"
+  class="px-3 py-1 border rounded flex"
   [disabled]="currentPage === 1"
   (click)="goTo(currentPage - 1)">
-  ◀ Anterior
+    <span class="material-symbols-outlined">chevron_left</span> Anterior
   </button>
 
   @if (currentPage +1 > totalPages && currentPage -2 > 0) {
@@ -58,10 +58,12 @@
 
 
   <button
-  class="px-3 py-1 border rounded"
+  class="px-3 py-1 border rounded flex"
   [disabled]="currentPage === totalPages"
   (click)="goTo(currentPage + 1)">
-  Próxima ▶
+  Próxima <span class="material-symbols-outlined">
+    chevron_right
+    </span>
   </button>
 
 
@@ -70,6 +72,6 @@
   class="px-3 py-1 border rounded"
   [disabled]="currentPage === totalPages"
   (click)="goTo(totalPages)">
-  Última ⏭
+  Última
   </button>
 </nav>

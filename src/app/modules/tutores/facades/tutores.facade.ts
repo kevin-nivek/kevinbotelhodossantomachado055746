@@ -51,7 +51,7 @@ export class TutoresFacade {
   }
 
   editTutor(id: number, tutorData: any) {
-    this.service.editTutor(id, tutorData).subscribe(() => this.loadTutores());
+    return this.service.editTutor(id, tutorData);
   }
 
   deleteFotoTutor(tutorId: number, fotoId: number) {

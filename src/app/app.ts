@@ -4,10 +4,11 @@ import { MenuComponent } from './shared/components/menu/menu.component';
 import { HealthService } from './core/health/heallth.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { HealthFacade } from './core/health/health.facade';
+import { AlertComponent } from "./shared/components/alert/alert.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MenuComponent, AsyncPipe],
+  imports: [RouterOutlet, MenuComponent, AsyncPipe, AlertComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
