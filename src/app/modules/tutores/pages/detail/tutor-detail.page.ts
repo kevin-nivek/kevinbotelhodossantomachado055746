@@ -25,8 +25,10 @@ export class TutorDetailPage implements OnInit {
 
   ngOnInit(): void {
     this.tutor$ = this.facade.selectedTutor$;
-    this.tutor$.pipe(filter(Boolean), take(1)).subscribe(tutor => {
-        this.listPets = tutor.pets || []
+    this.tutor$
+        .pipe(filter((tutor): tutor is Tutor => !!tutor))
+        .subscribe(tutor => {
+          this.listPets = tutor.pets ?? [];
     });
     const tutorId = this.route.snapshot.paramMap.get('id');
     if(tutorId){

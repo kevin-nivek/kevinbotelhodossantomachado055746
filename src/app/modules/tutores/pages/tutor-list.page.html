@@ -31,7 +31,6 @@
     </div>
 
   </div>
-<!--  -->
   <div class="flex flex-wrap gap-2 p-2 w-full">
     @for (tutor of (tutores$ | async) ; track tutor.id) {
       <div
@@ -66,6 +65,7 @@
       </div>
     }
   </div>
+
   <div class="w-full flex items-center justify-evenly mt-2">
       <app-paginator
       [currentPage]="page! + 1"
