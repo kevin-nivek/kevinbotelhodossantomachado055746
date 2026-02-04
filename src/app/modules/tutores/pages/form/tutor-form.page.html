@@ -67,7 +67,7 @@
                 mask="000.000.000-00"
                 placeholder="000.000.000-00" formControlName="cpf" />
               @if (form.get('cpf')?.invalid && form.get('cpf')?.touched) {
-                <small class="text-red-500">CPF é obrigatório</small>
+                <small class="text-red-500">CPF é obrigatório ou CPF invalido</small>
               }
             </div>
 
@@ -171,18 +171,30 @@
 
         <div class="flex flex-wrap gap-2">
           @for (petOption of (pets$ | async); track petOption.id) {
-            <div class="flex flex-col p-2 items-start border rounded-2xl hover:shadow-lg hover:cursor-pointer transition"
+            <div class="flex flex-col p-2 items-start border rounded-2xl hover:shadow-lg hover:cursor-pointer hover:bg-zinc-300 transition"
+              title="clique para adicionar "
               (click)="addNewPet(petOption)"
             >
-              <img
-                [src]="petOption.foto?.url"
-                class="h-16 min-16 rounded-b-lg inline-block mr-2 object-cover"
-                alt="sem imagem"
-              />
+              <div class="flex w-full items-center  justify-center">
+                <img
+                  [src]="petOption.foto?.url"
+                  class="h-16 min-16 rounded-b-lg inline-block mr-2 object-cover"
+                  alt="sem imagem"
+                />
+
+              </div>
+
+
               <div class="flex flex-col w-40 wrap-break-word">
                 <span><strong>{{petOption.nome}}</strong> </span>
                 <span>Raça: {{petOption.raca}}</span>
                 <span>Idade: {{petOption.idade}}</span>
+              </div>
+
+              <div class="w-40 flex justify-center mt-1">
+                <button class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white  px-2 py-2 rounded cursor-pointer transition">
+                  Adicionar Pet
+                </button>
               </div>
             </div>
           }

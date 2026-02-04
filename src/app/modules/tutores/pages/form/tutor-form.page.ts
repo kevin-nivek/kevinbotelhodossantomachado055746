@@ -63,7 +63,7 @@ export class TutorFormPage implements OnInit {
       telefone: ['',Validators.required],
       email: [''],
       endereco: [''],
-      cpf: ['', Validators.required],
+      cpf: [''],
       foto: [''],
       pets: [[]],
       nomePetSearch: ['']
