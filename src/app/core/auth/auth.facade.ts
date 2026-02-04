@@ -51,4 +51,8 @@ export class AuthFacade  {
     const exp = localStorage.getItem('expires_at');
     return !exp || Date.now() > Number(exp);
   }
+
+  isLogged(){
+    return this.service.isLogged()
+  }
 }
