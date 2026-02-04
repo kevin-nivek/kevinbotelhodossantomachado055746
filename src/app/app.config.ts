@@ -10,7 +10,7 @@ import { provideNgxMask } from 'ngx-mask';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), provideClientHydration(withEventReplay()),
+    provideRouter(routes),
     provideHttpClient(
       withInterceptors([authInterceptor])
     ),

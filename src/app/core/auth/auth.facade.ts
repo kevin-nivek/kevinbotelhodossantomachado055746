@@ -1,6 +1,6 @@
 import { inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { AuthService } from "./auth.service";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, catchError, tap, throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { isPlatformBrowser } from "@angular/common";
 
@@ -21,14 +21,16 @@ export class AuthFacade  {
   }
 
   login(username: string, password: string) {
-    this.service.login(username, password).subscribe(res => {
-      localStorage.setItem('token', res.access_token);
-      localStorage.setItem('refresh_token', res.refresh_token);
-      localStorage.setItem('expires_at', (Date.now() + res.expires_in * 1000).toString());
-      this.logged$.next(true);
-      // this.tokenSubject.next(res.access_token);
-      this.router.navigate(['/pets']);
-    });
+    return this.service.login(username, password).pipe(tap ( res =>{
+          localStorage.setItem('token', res.access_token);
+          localStorage.setItem('refresh_token', res.refresh_token);
+          localStorage.setItem('expires_at', (Date.now() + res.expires_in * 1000).toString());
+        }
+      ),
+      catchError(err => {
+        return throwError(() => err)
+      })
+    )
   }
 
   get token() {
