@@ -1,54 +1,75 @@
 @let page = (page$ | async);
 @let pageCount = (pageCount$ | async);
+@let total = (total$ | async);
 
+<div class="p-4 w-full">
+  <div class="p-2">
+    <h1 class="text-xl font-bold">Pets Cadastrados</h1>
 
-<div class="p-4">
-  <h1 class="text-2xl font-bold mb-4">Pets Cadastrados</h1>
+    <div class="flex items-center flex-wrap justify-between">
+      <div class="flex flex-2 items-center ">
+        <input
+        type="text"
+        placeholder="Buscar por nome"
+        class="border p-2 mb-4 mt-4 w-full md:w-1/3 inline-block"
+        [(ngModel)]="nomeSearch"
+        />
+        <button class="ml-2 px-4 py-2 bg-blue-600 text-white font-bold rounded inline-flex items-center gap-2"
+        (click)="search()">
+          <span class="material-icons text-sm ">search</span>
+          Buscar
+        </button>
+      </div>
 
-  <div class="flex items-center ">
-    <input
-    type="text"
-    placeholder="Buscar por nome"
-    class="border p-2 mb-4 mt-4 w-full md:w-1/3 inline-block"
-    [(ngModel)]="nomeSearch"
-    />
-    <button class="ml-2 px-4 py-2 bg-blue-600 text-white font-bold rounded inline-flex items-center gap-2"
-    (click)="search()">
-      <span class="material-icons text-sm ">search</span>
-      Buscar
-    </button>
+      <div class="flex item-end">
+        <button class="ml-2 px-4 py-2 bg-green-600 text-white font-bold rounded inline-flex items-center gap-2"
+          (click)="novoPet()">
+            <span class="material-icons text-[20px]">add</span>
+            Novo Pet
+        </button>
+      </div>
 
-
+    </div>
 
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="flex flex-wrap gap-2 p-2 2-full">
     @for (pet of (pets$ | async) ; track pet.id) {
-    <div
-      class="border rounded shadow p-4 cursor-pointer flex flex-col items-center justify-center hover:shadow-lg transition "
-      (click)="viewDetail(pet.id)"
-    >
-      @if (pet.foto?.url) {
-      <img
-        [src]="pet.foto?.url"
-        class="h-60 mb-2 rounded"
-      />
-      }
+      <div class="border rounded shadow p-4 cursor-pointer flex flex-col items-center justify-center hover:shadow-lg hover:bg-zinc-300 transition min-w-60 w-[19%]"
+        (click)="viewDetail(pet.id)"
+      >
+        <div class="border max-w-40 rounded border-zin-600">
+            @if (pet.foto?.url) {
+              <img
+                [src]="pet.foto?.url"
+                class="h-40  object-fill mb-2 rounded"
+              />
+            }
+        </div>
 
-      <h2 class="font-semibold text-lg">{{ pet.nome }}</h2>
-      <p>Raça: {{ pet.raca }}</p>
-      <p>Idade: {{ pet.idade }} anos</p>
-    </div>
+        <h2 class="font-semibold text-lg wrap-break-word">{{ pet.nome  }}</h2>
+        <div class="flex flex-col items-start">
+          <p>Raça: {{ pet.raca || 'Não Informado'}} </p>
+          <p>Idade: {{ pet.idade ? pet.idade + 'anos' : 'Não Informado' }} </p>
+        </div>
+
+      </div>
+    }
+
+    @if(total ==0){
+      <div class="w-full flex flex-col  items-center justify-center">
+        <h2 class="text-3xl font-bold">Nenhum Resultado Encontrado</h2>
+        <img class="h-[40vh]" src="https://http.cat/404" alt="Nenhum resultado Encontrado">
+      </div>
     }
   </div>
 
-
-
-  <app-paginator
-    [currentPage]="page! + 1"
-    [totalPages]="pageCount!"
-    (pageChange)="onPageChange($event)"
-  >
-  </app-paginator>
-
+    <div class="w-full flex items-center justify-evenly mt-2">
+      <app-paginator
+      [currentPage]="page! + 1"
+      [totalPages]="pageCount!"
+      (pageChange)="onPageChange($event)"
+    >
+    </app-paginator>
+  </div>
 </div>

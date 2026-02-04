@@ -31,6 +31,7 @@
     </div>
 
   </div>
+
   <div class="flex flex-wrap gap-2 p-2 w-full">
     @for (tutor of (tutores$ | async) ; track tutor.id) {
       <div
@@ -47,9 +48,7 @@
           }
         </div>
 
-        <div>
 
-        </div>
         <h2 class="font-semibold text-lg wrap-break-word">{{ tutor.nome }}</h2>
         <div class="flex flex-col items-start">
           <p>Email: {{ tutor.email }}</p>
