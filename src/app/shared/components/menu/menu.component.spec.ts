@@ -2,6 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MenuComponent } from './menu.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
+import { AuthService } from '../../../core/auth/auth.service';
+
+class AuthServiceMock {
+  isLogged() {
+    return true;
+  }
+
+  logout() {}
+}
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
@@ -12,6 +21,9 @@ describe('MenuComponent', () => {
       imports: [
         MenuComponent,
         RouterTestingModule
+      ],
+      providers:[
+        {provide: AuthService, useClass: AuthServiceMock}
       ]
     }).compileComponents();
 
