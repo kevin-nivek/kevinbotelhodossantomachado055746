@@ -1,7 +1,7 @@
 <nav class="flex items-center gap-2">
 
   <button
-  class="px-3 py-1 border rounded"
+  class="px-3 py-1 border rounded hover:cursor-pointer hover:bg-zinc-300 "
   [disabled]="currentPage === 1"
   (click)="goTo(1)">
   Primeira
@@ -10,7 +10,7 @@
 
 
   <button
-  class="px-3 py-1 border rounded flex"
+  class="px-3 py-1 border rounded  hover:cursor-pointer hover:bg-zinc-300 flex"
   [disabled]="currentPage === 1"
   (click)="goTo(currentPage - 1)">
     <span class="material-symbols-outlined">chevron_left</span> Anterior
@@ -18,7 +18,7 @@
 
   @if (currentPage +1 > totalPages && currentPage -2 > 0) {
     <button
-    class="px-3 py-1 border rounded"
+    class="px-3 py-1 border rounded  hover:cursor-pointer hover:bg-zinc-300"
     (click)="goTo(currentPage - 2)">
     {{ currentPage - 2 }}
     </button>
@@ -26,7 +26,7 @@
 
   @if (currentPage > 1) {
     <button
-    class="px-3 py-1 border rounded"
+    class="px-3 py-1 border rounded  hover:cursor-pointer hover:bg-zinc-300"
     (click)="goTo(currentPage - 1)">
     {{ currentPage - 1 }}
   </button>
@@ -41,7 +41,7 @@
 
   @if (currentPage < totalPages) {
     <button
-    class="px-3 py-1 border rounded"
+    class="px-3 py-1 border rounded  hover:cursor-pointer hover:bg-zinc-300"
     (click)="goTo(currentPage + 1)">
     {{ currentPage + 1 }}
     </button>
@@ -50,7 +50,7 @@
 
   @if (currentPage -1 < 1 && currentPage + 2 <= totalPages) {
     <button
-    class="px-3 py-1 border rounded"
+    class="px-3 py-1 border rounded  hover:cursor-pointer hover:bg-zinc-300"
     (click)="goTo(currentPage + 2)">
     {{ currentPage + 2 }}
   </button>
@@ -58,7 +58,7 @@
 
 
   <button
-  class="px-3 py-1 border rounded flex"
+  class="px-3 py-1 border rounded  hover:cursor-pointer hover:bg-zinc-300 flex"
   [disabled]="currentPage === totalPages"
   (click)="goTo(currentPage + 1)">
   Próxima <span class="material-symbols-outlined">
@@ -69,7 +69,7 @@
 
 
   <button
-  class="px-3 py-1 border rounded"
+  class="px-3 py-1 border rounded  hover:cursor-pointer hover:bg-zinc-300"
   [disabled]="currentPage === totalPages"
   (click)="goTo(totalPages)">
   Última
