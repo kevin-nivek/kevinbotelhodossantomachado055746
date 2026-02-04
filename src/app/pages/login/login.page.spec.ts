@@ -12,7 +12,7 @@ describe('LoginPage', () => {
 
   beforeEach(async () => {
     authFacade = {
-      login: vi.fn()
+      login: vi.fn().mockReturnValue(of({}))
     };
 
     await TestBed.configureTestingModule({
