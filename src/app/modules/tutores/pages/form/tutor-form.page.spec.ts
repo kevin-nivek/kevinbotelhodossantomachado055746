@@ -6,6 +6,8 @@ import { TutorFormPage } from './tutor-form.page';
 import { Tutor } from '../../../../core/models/tutor.model';
 import { TutoresFacade } from '../../facades/tutores.facade';
 import { PetsFacade } from '../../../pets/facades/pets.facade';
+import { ReactiveFormsModule } from '@angular/forms';
+import { provideNgxMask } from 'ngx-mask';
 
 
 describe('TutorFormPage', () => {
@@ -43,6 +45,7 @@ describe('TutorFormPage', () => {
       novoTutor: vi.fn(() => of(tutorMock)),
       editTutor: vi.fn(() => of(tutorMock)),
       loadTutorById: vi.fn(),
+      loadTutores: vi.fn(),
       reloadList: vi.fn(),
       selectedTutor$: of(tutorMock)
 
@@ -55,8 +58,9 @@ describe('TutorFormPage', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [TutorFormPage],
+      imports: [TutorFormPage, ReactiveFormsModule],
       providers: [
+        provideNgxMask(),
         { provide: TutoresFacade, useValue: tutoresFacade },
         { provide: PetsFacade, useValue: petsFacade },
         {
@@ -85,13 +89,14 @@ describe('TutorFormPage', () => {
     expect(tutoresFacade.novoTutor).not.toHaveBeenCalled();
   });
 
-  it('Cria Tutor formulario vaido', () => {
+  it('Cria Tutor formulario valido', () => {
     createComponent();
-
+    component.edit = false;
+    component.tutorId = undefined;
     component.form.patchValue({
       nome: 'Aquiles',
       email: 'aquiles@email.com',
-      telefone: '659999992',
+      telefone: '65999999212',
       endereco: 'Avenida troia'
     });
 
@@ -109,14 +114,19 @@ describe('TutorFormPage', () => {
 
   it('Teste de edicao', () => {
     createComponent('1');
-
+    component.edit = true;
+    component.tutorId = 1;
     component.form.patchValue({
       nome: 'Aquiles',
       email: 'aquiles@email.com',
       telefone: '65991111112',
-      endereco: 'Avenida troia'
+      endereco: 'Avenida troia',
+      cpf: '12345678901',
+      foto: null,
+      pets: [],
+      nomePetSearch: ''
     });
-
+    expect(component.form.valid).toBe(true);
     component.submit();
 
     expect(tutoresFacade.editTutor).toHaveBeenCalledWith(1, component.form.value);

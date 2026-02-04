@@ -10,6 +10,7 @@ import { PetsFacade } from "../../../pets/facades/pets.facade";
 import { NgxMaskDirective } from "ngx-mask";
 import { AlertComponent } from "../../../../shared/components/alert/alert.component";
 import { AlertService } from "../../../../shared/components/alert/alert.service";
+import { Tutor } from "../../../../core/models/tutor.model";
 
 @Component({
   selector: 'app-tutor-form-page',
@@ -51,6 +52,8 @@ export class TutorFormPage implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.loadEVerificaEdicao();
+
     this.petsFacade.clearPets()
     this.pets$ = this.petsFacade.pets$;
     this.pagePet$ = this.petsFacade.page$;
@@ -68,7 +71,8 @@ export class TutorFormPage implements OnInit {
       pets: [[]],
       nomePetSearch: ['']
     });
-
+  }
+  loadEVerificaEdicao(){
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       this.edit = false;
@@ -82,19 +86,22 @@ export class TutorFormPage implements OnInit {
         this.facade.loadTutorById(this.tutorId);
 
         this.facade.selectedTutor$
-          .pipe(filter(Boolean), take(1))
-          .subscribe(tutor => this.form.patchValue(tutor));
+        .pipe(filter(Boolean), take(1))
+        .subscribe(tutor => {
+          this.form.patchValue(tutor);
+          this.loadFotoList(tutor);
+        });
       }
     });
+  }
 
-    if(this.edit){
-      this.facade.selectedTutor$.pipe(filter(Boolean), take(1)).subscribe(tutor => {
-        if (tutor && tutor.foto) {
-          this.fotoPreviewUrl = tutor.foto.url;
-          this.listPets = tutor.pets || []
-        }
-      });
+  loadFotoList(tutor: Tutor){
+    if (tutor.foto) {
+      this.fotoPreviewUrl = tutor.foto.url;
     }
+
+    this.listPets = tutor.pets || [];
+    this.listPetsId = this.listPets.map(p => p.id);
   }
 
   submit() {
@@ -142,12 +149,8 @@ export class TutorFormPage implements OnInit {
   }
 
   backTutores() {
-    // this.facade.reloadList()
-    // setTimeout(() => {
       this.facade.loadTutores(0,10,'')
       this.router.navigate(['/tutores']);
-    // },200)
-
   }
 
   onFileSelected(event: Event) {
