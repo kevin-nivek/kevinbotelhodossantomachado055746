@@ -21,9 +21,9 @@
           {{ tutor.nome }}
         </h1>
         <div class="flex flex-col gap-1 items-start">
-          <p><strong>CPF:</strong> {{ tutor.cpf }}</p>
+          <p><strong>CPF:</strong> {{ tutor.cpf | cpf}}</p>
           <p><strong>Email:</strong> {{ tutor.email || 'Não informado' }}</p>
-          <p><strong>Telefone:</strong> {{ tutor.telefone  }}</p>
+          <p><strong>Telefone:</strong> {{ tutor.telefone | telefone}}</p>
           <p><strong>Endereço:</strong> {{ tutor.endereco || 'Não informado' }}</p>
         </div>
 

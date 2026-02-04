@@ -5,12 +5,14 @@ import { filter, Observable, take } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TutoresFacade } from "../../facades/tutores.facade";
 import { Pet } from "../../../../core/models/pet.model";
+import { TelefonePipe } from "../../../../shared/pipes/telefone-pipe";
+import { CpfPipe } from "../../../../shared/pipes/cpf-pipe";
 
 @Component({
   selector: 'app-tutor-detail-page',
   templateUrl: './tutor-detail.page.html',
   standalone: true,
-  imports: [  AsyncPipe]
+  imports: [  AsyncPipe, TelefonePipe, CpfPipe]
 })
 export class TutorDetailPage implements OnInit {
   tutor$!: Observable<Tutor | null>
