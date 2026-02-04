@@ -21,6 +21,9 @@ export class TutoresFacade {
   private totalSubject = new BehaviorSubject<number>(0);
   total$ = this.totalSubject.asObservable();
 
+  private nomeSearchSubject = new BehaviorSubject<string>('');
+  nomeSearch$ = this.nomeSearchSubject.asObservable();
+
 
   private selectedTutorSubject = new BehaviorSubject<Tutor | null>(null);
     selectedTutor$ = this.selectedTutorSubject.asObservable();
@@ -33,6 +36,7 @@ export class TutoresFacade {
       this.pageSubject.next(res.page);
       this.pageCountSubject.next(res.pageCount);
       this.totalSubject.next(res.total);
+      this.nomeSearchSubject.next(nome);
     });
   }
 

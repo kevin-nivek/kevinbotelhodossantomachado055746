@@ -52,7 +52,7 @@ export class PetsFacade  {
   }
 
   editPet(id: number, petData: any) {
-    this.service.editPet(id, petData).subscribe(() => this.loadPets());
+    return this.service.editPet(id, petData);
   }
 
   deleteFotoPet(petId: number, fotoId: number) {
