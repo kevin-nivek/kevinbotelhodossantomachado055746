@@ -8,10 +8,11 @@ import { filter, Observable, take } from "rxjs";
 import { TutoresFacade } from "../../../tutores/facades/tutores.facade";
 import { Tutor } from "../../../../core/models/tutor.model";
 import { of } from 'rxjs';
+import { TelefonePipe } from "../../../../shared/pipes/telefone-pipe";
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,],
+  imports: [CommonModule, ReactiveFormsModule, TelefonePipe],
   templateUrl: './pet-form.page.html',
 })
 export class PetFormPage implements OnInit {
