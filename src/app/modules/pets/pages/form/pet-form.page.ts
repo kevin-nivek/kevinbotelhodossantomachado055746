@@ -9,6 +9,7 @@ import { TutoresFacade } from "../../../tutores/facades/tutores.facade";
 import { Tutor } from "../../../../core/models/tutor.model";
 import { of } from 'rxjs';
 import { TelefonePipe } from "../../../../shared/pipes/telefone-pipe";
+import { AlertService } from "../../../../shared/components/alert/alert.service";
 
 @Component({
   standalone: true,
@@ -21,10 +22,11 @@ export class PetFormPage implements OnInit {
   edit = false;
   petId?: number;
 
-  fotoDeletedId?: number;
+  fotoDeletedId?: number | null = null;
   selectedFile?: File | null;
   fotoPreviewUrl?: string | null;
   tutoresList: Tutor[] = [];
+
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +34,7 @@ export class PetFormPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private tutoresFacade: TutoresFacade,
+    private alert: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -79,12 +82,29 @@ export class PetFormPage implements OnInit {
   }
 
   submit() {
-    if (this.form?.invalid) return;
-
+    if (this.form.invalid) {
+      this.alert.error('Formulario Inválido')
+      this.form.markAllAsTouched();
+      return;
+    }
+    const fileToUpload = this.selectedFile;
     if (this.edit) {
-      this.facade.editPet(this.petId!, this.form?.value);
+      this.facade.editPet(this.petId!, this.form?.value).subscribe({
+        next: ()=>{
+          this.alert.success('Pet atualizado com sucesso')
+          this.selectedFile = fileToUpload
+          if(this.selectedFile ||  this.fotoDeletedId){
+            const deletedFotos = this.fotoDeletedId!
+            this.uploadFoto(this.petId!, deletedFotos);
+          }
+        },
+        error: () => {
+          this.alert.error('Erro ao Atuaalizar Pe');
+        }
+
+      })
       if(this.selectedFile || this.fotoDeletedId){
-        this.uploadFoto(this.petId!);
+        this.uploadFoto(this.petId!, this.fotoDeletedId!);
       }
 
     } else {
@@ -93,8 +113,9 @@ export class PetFormPage implements OnInit {
         const newPetId = pet.id;
         if(this.selectedFile || fileToUpload){
           this.selectedFile = fileToUpload
-          this.uploadFoto(newPetId);
+          this.uploadFoto(newPetId, null);
         }
+        this.alert.success('Pet criado com sucesso')
       });
     }
     this.bakHome();
@@ -123,7 +144,7 @@ export class PetFormPage implements OnInit {
     input.value = '';
   }
 
-  uploadFoto(petId: number) {
+  uploadFoto(petId: number , fotoDeleted: number | null) {
     if(this.fotoDeletedId)
     {
       this.facade.deleteFotoPet(petId, this.fotoDeletedId).subscribe(() => {
