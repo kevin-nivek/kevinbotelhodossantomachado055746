@@ -4,13 +4,14 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs/internal/Observable";
 import { Pet } from "../../../../core/models/pet.model";
 import { AsyncPipe } from "@angular/common";
+import { TelefonePipe } from "../../../../shared/pipes/telefone-pipe";
 
 
 @Component({
   standalone: true,
   selector: 'app-pet-detail',
   templateUrl: './pet-detail.page.html',
-  imports: [ AsyncPipe],
+  imports: [ AsyncPipe, TelefonePipe],
 })
 
 export class PetDetailPage implements OnInit{
