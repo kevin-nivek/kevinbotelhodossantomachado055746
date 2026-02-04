@@ -1,10 +1,11 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
 import { inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { Router } from "@angular/router";
-import { catchError, Observable, switchMap, throwError } from "rxjs";
+import { catchError, Observable, switchMap, tap, throwError } from "rxjs";
 import { AuthFacade } from "./auth.facade";
 import { AuthService } from "./auth.service";
 import { isPlatformBrowser } from "@angular/common";
+import { HealthFacade } from "../health/health.facade";
 
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -12,15 +13,30 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const platformId = inject(PLATFORM_ID);
+  const health = inject(HealthFacade);
   if (!isPlatformBrowser(platformId)) {
     return next(req);
   }
+
   if (
     req.url.includes('/autenticacao/login') ||
     req.url.includes('/autenticacao/refresh')
   ) {
     return next(req);
   }
+  const handleAuthError = (err: any) => {
+    if(err.status == 0){
+      health.changeStatus("DOWN")
+      return throwError(()=> err);
+    }
+    if (err.status === 401 || err.status === 403) {
+      localStorage.clear();
+      router.navigate(['/login']);
+    }
+    return throwError(() => err);
+  };
+
+
   if (auth.isTokenExpired()) {
     return authService.refresh(auth.refreshToken!).pipe(
       switchMap(res => {
@@ -34,14 +50,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         });
         return next(clonedReq);
       }),
-      catchError(err => {
-        if (err.status === 401 || err.status === 404 || err.status == 0) {
-          localStorage.clear();
-          router.navigate(['/login']);
-        }
-
-        return throwError(() => err);
-      })
+      tap(() => health.changeStatus("UP")),
+      catchError(handleAuthError)
     )
   }
 
@@ -53,13 +63,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     : req;
 
   return next(authReq).pipe(
-    catchError(err => {
-      if (err.status === 401 || err.status === 404 || err.status == 0) {
-        localStorage.clear();
-        router.navigate(['/login']);
-      }
-
-      return throwError(() => err);
-    })
+    tap(() => health.changeStatus("UP")),
+    catchError(handleAuthError)
   );
 };
