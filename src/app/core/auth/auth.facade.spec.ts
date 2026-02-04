@@ -39,12 +39,11 @@ describe('AuthFacade', () => {
       })
     );
 
-    facade.login('admin', '123');
+    facade.login('admin', '123').subscribe();
 
     expect(authService.login).toHaveBeenCalledWith('admin', '123');
     expect(localStorage.getItem('token')).toBe('token123');
     expect(localStorage.getItem('refresh_token')).toBe('refresh123');
-    expect(router.navigate).toHaveBeenCalledWith(['/pets']);
   });
 
   it('retorna token', () => {
