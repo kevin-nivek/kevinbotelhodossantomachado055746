@@ -15,8 +15,12 @@ export class AuthService {
   }
 
   refresh(refreshToken: string) {
-  return this.http.put<any>(`${this.baseUrl}/refresh`, {
-    refreshToken: refreshToken
-  });
+    return this.http.put<any>(`${this.baseUrl}/refresh`, {
+      refreshToken: refreshToken
+    });
+  }
+
+  isLogged(): boolean {
+    return !!localStorage.getItem('token')
   }
 }

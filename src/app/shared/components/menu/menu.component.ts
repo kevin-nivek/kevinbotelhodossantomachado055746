@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { RouterModule, Router } from "@angular/router";
+import { AuthService } from "../../../core/auth/auth.service";
 
 @Component({
   selector: "app-menu",
@@ -7,4 +8,14 @@ import { RouterModule } from "@angular/router";
   imports: [RouterModule],
 
 })
-export class MenuComponent {}
+export class MenuComponent {
+
+  constructor(public auth: AuthService , private router: Router){}
+
+  logout(){
+    localStorage.clear()
+    this.router.navigate(['/login']);
+  }
+
+}
+
