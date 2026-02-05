@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   frontend:
-    container_name : kevinbotelhodossantosmachado055746
+    container_name : kevinmachado-seplag-frontend
     build: .
     ports:
       - "4200:80"
