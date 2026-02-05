@@ -1,59 +1,99 @@
-# Kevinbotelhodossantomachado055746
+# Kevinbotelhodossantomachado055746 – SEPLAG Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+Aplicação frontend desenvolvida em **Angular** para gerenciamento de **Pets** e **Tutores**, com recursos de autenticação, paginação, filtros, alertas, detecção de conectividade e containerização com Docker.
 
-## Development server
+---
 
-To start a local development server, run:
+## Tecnologias Utilizadas
+
+* **Angular** (Standalone Components)
+* **TypeScript**
+* **RxJS**
+* **TailwindCSS**
+* **Docker & Docker Compose**
+* **Nginx** (produção)
+
+---
+
+## Funcionalidades
+
+### Autenticação
+
+* Login com token armazenado no `localStorage`
+* Logout com limpeza de sessão
+* Proteção de rotas via `AuthGuard`
+* Interceptor HTTP para anexar token e tratar erros `401`
+
+### Pets
+
+* Listagem paginada
+* Filtro por nome
+* Criação e edição de pets
+* Visualização de detalhes
+
+### Tutores
+
+* Listagem de tutores
+* Criação e edição
+* Associação de pets ao tutor
+* Máscaras de CPF e telefone
+
+### UX / Estado
+
+* Componente reutilizável de paginação
+* Alertas de sucesso, aviso e erro
+
+---
+
+##  Health Check (Frontend)
+
+Como o backend **não possui rota de health check**, a aplicação realiza a verificação de conectividade no frontend:
+
+* Detecção de ausência de internet (`navigator.onLine`)
+* Tratamento de erro de conexão (`HttpErrorResponse` com status 0)
+* Exibição de alerta quando offline
+* Remoção automática do alerta quando a conexão é restabelecida
+
+---
+
+## 🛠 Desenvolvimento
+
+### Servidor de desenvolvimento
+
+Para iniciar o servidor local:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Acesse `http://localhost:4200/`. O projeto recarrega automaticamente sempre que você modificar os arquivos.
 
-## Code scaffolding
+### Build do projeto
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Para gerar uma build de produção:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Os arquivos serão compilados em `dist/` com otimizações de performance e tamanho.
 
-## Running unit tests
+### Testes unitários
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Execute os testes com [Vitest](https://vitest.dev/):
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+##  Containerização
+
+### Build e execução com Docker
 
 ```bash
-ng e2e
+docker compose up --build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+A aplicação será iniciada em containers, pronta para desenvolvimento ou produção.
